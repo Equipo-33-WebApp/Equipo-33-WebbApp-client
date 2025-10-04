@@ -1,11 +1,15 @@
+import { Footer } from "@/components/layout/Footer";
+import { Header } from "@/components/layout/Header";
 import React from "react";
 
-const LandingLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const LandingLayout: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   return (
-    <div>
-      <header>Landing Header</header>
+    <div className="flex min-h-screen flex-col">
+      <Header />
       <main>{children}</main>
-      <footer>Landing Footer</footer>
+      <Footer />
     </div>
   );
 };
