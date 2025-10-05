@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/Button";
+import { Button } from "../ui/Button";
 import type { NavLink } from "./types";
 import { useAuth } from "@/hooks/useAuth";
 import { ROLE_OPERATOR, ROLE_PYME } from "@/constants/roles";
