@@ -8,11 +8,7 @@
     "module": "ESNext",
     "types": ["vite/client"],
     "skipLibCheck": true,
-
-    // [ELIMINAR] "baseUrl": ".", <-- Se elimina para evitar el error de depreciación
-
     "paths": {
-      // [CAMBIO CLAVE] Se especifica la ruta de manera relativa a la raíz
       "@/*": ["./src/*"]
     },
 

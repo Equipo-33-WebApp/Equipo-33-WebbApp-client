@@ -1,29 +1,24 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-
-import DashboardPage from "../pages/DashboardPage";
+import PrivateRoute from "./PrivateRoute";
+import { ALL_ROLES } from "@/constants/roles";
 
 import { LandingPage } from "@/pages/LandingPage";
-import DashboardLayout from "../layouts/DashboardLayout";
-import LandingLayout from "../layouts/LandingLayout";
+import { DashboardPage } from "@/features/dashboard"
+
+// Según que ruta privada se use, especificar roles con las constantes:
+// ALL_ROLES, ROLE_PYME o ROLE_OPERATOR
 
 const AppRouter: React.FC = () => {
   return (
     <Routes>
-      <Route
-        path="/"
-        element={
-          <LandingLayout>
-            <LandingPage />
-          </LandingLayout>
-        }
-      />
+      <Route path="/" element={<LandingPage />} />
       <Route
         path="/dashboard"
         element={
-          <DashboardLayout>
+          <PrivateRoute allowedRoles={ALL_ROLES}>
             <DashboardPage />
-          </DashboardLayout>
+          </PrivateRoute>
         }
       />
     </Routes>

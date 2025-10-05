@@ -1,5 +1,7 @@
-import { Button } from "@/components/ui/button";
-import type { NavLink } from "@/types";
+import { Button } from "@/components/ui/Button";
+import type { NavLink } from "./types";
+import { useAuth } from "@/hooks/useAuth";
+import { ROLE_OPERATOR, ROLE_PYME } from "@/constants/roles";
 
 const navLinks: NavLink[] = [
   { label: "Inicio", href: "#" },
@@ -9,6 +11,8 @@ const navLinks: NavLink[] = [
 ];
 
 export const Header = () => {
+  const { isAuthenticated, login, logout } = useAuth();
+
   return (
     // Usa bg-background y text-primary
     <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-slate-200">
@@ -57,7 +61,15 @@ export const Header = () => {
         </nav>
 
         <div className="flex items-center gap-4">
-          <Button variant="accent">Solicitar</Button>
+          {!isAuthenticated ? (
+              <>
+                <Button onClick={() => login(ROLE_PYME)} variant="accent">Pyme</Button>
+                <Button onClick={() => login(ROLE_OPERATOR)} variant="accent">Operador</Button>
+              </>
+            ):(
+              <Button onClick={() => logout()} variant="destructive">Logout</Button>
+            )
+          }
         </div>
       </div>
     </header>

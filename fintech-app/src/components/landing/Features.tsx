@@ -1,11 +1,11 @@
-import type { Feature } from "@/types";
+import type { Feature } from "./types";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../ui/card";
+} from "../ui/Card";
 
 const features: Feature[] = [
   {

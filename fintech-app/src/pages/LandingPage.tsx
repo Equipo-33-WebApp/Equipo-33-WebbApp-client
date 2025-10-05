@@ -1,14 +1,17 @@
 // ==================== src/pages/LandingPage.tsx ====================
-import { Features } from "@/components/sections/Feactures";
-import { CallToAction } from "../components/sections/CallToAction";
+import { Footer } from "@/components/landing/Footer";
+import { Header } from "@/components/landing/Header";
 
-import { Pricing } from "@/components/sections/Pricing";
-import { Hero } from "../components/sections/Hero";
-import { Testimonials } from "../components/sections/Testimonials";
+import { Hero } from "@/components/landing/Hero";
+import { Features } from "@/components/landing/Features";
+import { Testimonials } from "@/components/landing/Testimonials";
+import { Pricing } from "@/components/landing/Pricing";
+import { CallToAction } from "@/components/landing/CallToAction";
 
 export const LandingPage = () => {
   return (
     <div className="flex min-h-screen flex-col">
+      <Header />
       <main className="flex-grow">
         <Hero />
         <Features />
@@ -16,6 +19,7 @@ export const LandingPage = () => {
         <Pricing />
         <CallToAction />
       </main>
+      <Footer />
     </div>
   );
 };

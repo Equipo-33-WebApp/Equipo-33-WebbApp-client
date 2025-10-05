@@ -1,12 +1,12 @@
-import { cn } from "@/lib/utils";
-import { Button } from "../ui/button";
+import { cn } from "@/utils/cn";
+import { Button } from "../ui/Button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../ui/card";
+} from "../ui/Card";
 
 interface Plan {
   name: string;
