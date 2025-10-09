@@ -1,6 +1,13 @@
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "../ui/Button";
+import { useNavigate } from "react-router-dom";
+import { ROLE_PYME } from "@/constants/roles";
+import { ROUTES } from "@/constants/routes";
 
 export const Hero = () => {
+  const { isAuthenticated, user } = useAuth();
+  const navigate = useNavigate();
+
   return (
     <section className="relative min-h-[600px] flex items-center">
       <div
@@ -25,7 +32,14 @@ export const Hero = () => {
             nos encargamos del crédito.
           </p>
           <div className="mt-10 flex gap-4">
-            <Button size="lg" variant="accent">
+            <Button 
+              size="lg" 
+              variant="accent"
+              onClick={() => isAuthenticated && user?.role === ROLE_PYME
+                ? navigate(ROUTES.DASHBOARD.PYME.REQUEST) 
+                : navigate(ROUTES.LOGIN) 
+              }
+            >
               Solicitar Financiación
             </Button>
             {/* El botón outline mantiene la estética en el Hero (fondo oscuro) */}

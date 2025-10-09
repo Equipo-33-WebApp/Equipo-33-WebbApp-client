@@ -4,9 +4,12 @@ type UserRole = "pyme" | "operator" ;
 
 interface User {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   role: UserRole;
+  avatar?: string;
+  businessType: string;
   token?: string;
 }
 
