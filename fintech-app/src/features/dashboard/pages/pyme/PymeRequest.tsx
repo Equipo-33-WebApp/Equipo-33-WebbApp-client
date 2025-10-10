@@ -3,8 +3,9 @@
 import React, { useState } from "react";
 
 // --- Importaciones ---
-import { DigitalSignature } from "@/features/credit-request/components/AMLValidation";
-import { AMLValidation } from "@/features/credit-request/components/DigitalSignature";
+
+import { AMLValidation } from "@/features/credit-request/components/AMLValidation";
+import { DigitalSignature } from "@/features/credit-request/components/DigitalSignature";
 import { FormCredit } from "@/features/credit-request/components/FormCredit";
 import { RequestConfirmation } from "../../components/pyme/RequestConfirmation";
 import { RequestInfo } from "../../components/pyme/RequestInfo";
