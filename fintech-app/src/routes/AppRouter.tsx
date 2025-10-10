@@ -6,6 +6,7 @@ import { ALL_ROLES } from "@/constants/roles";
 import { LandingPage } from "@/pages/LandingPage";
 import { DashboardPage } from "@/features/dashboard"
 import LoginPage from "@/pages/auth/LoginPage";
+import RegisterPage from "@/pages/auth/RegisterPage";
 
 
 // Según que ruta privada se use, especificar roles con las constantes:
@@ -16,6 +17,7 @@ const AppRouter: React.FC = () => {
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
       <Route
         path="/dashboard"
         element={

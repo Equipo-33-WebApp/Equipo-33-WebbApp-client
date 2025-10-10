@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { loginUser } from "@/api/auth";
 import { cn } from "@/utils/cn";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 export default function LoginForm() {
@@ -95,13 +95,13 @@ export default function LoginForm() {
             </button>
 
             <p className="text-center text-sm mt-6 text-gray-500">
-                ¿Olvidaste tu contraseña?{" "}
-                <a
-                    href="#"
+                ¿No tienes cuenta?{" "}
+                <Link
+                    to="/register"
                     className="text-[--color-accent] font-semibold hover:underline"
                 >
-                    Recupérala aquí
-                </a>
+                    Registrate aquí
+                </Link>
             </p>
         </form>
     );
