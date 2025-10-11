@@ -4,6 +4,8 @@ import PrivateRoute from "./PrivateRoute";
 import { ALL_ROLES } from "@/constants/roles";
 
 import { LandingPage } from "@/pages/LandingPage";
+import LoginPage from "@/pages/auth/LoginPage";
+import RegisterPage from "@/pages/auth/RegisterPage";
 import { DashboardRoutes } from "./DashboardRoutes";
 
 // Según que ruta privada se use, especificar roles con las constantes:
@@ -13,6 +15,8 @@ const AppRouter: React.FC = () => {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
       <Route
         path="/dashboard/*"
         element={
