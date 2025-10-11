@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { ROLE_PYME } from "@/constants/roles";
 import { AuthContext } from "./authContext";
 import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/constants/routes";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(() => {
@@ -22,8 +23,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     (mockRole: UserRole = ROLE_PYME) => {
       const mockUser: User = {
         id: "1",
-        name: "Armando Casas",
-        email: "armin@example.com",
+        firstName: "Javier",
+        lastName: "López",
+        email: "javi64@example.com",
+        avatar: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=200",
+        businessType: "Comercial",
         role: mockRole,
       };
 
@@ -33,7 +37,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       localStorage.setItem("user", JSON.stringify(mockUser));
       localStorage.setItem("isAuthenticated", "true");
 
-      navigate("/dashboard");
+      if (mockUser?.role === ROLE_PYME)
+        navigate(ROUTES.DASHBOARD.PYME.OVERVIEW)
+      else
+        navigate(ROUTES.DASHBOARD.OPERATOR.OVERVIEW)
     },
     [navigate]
   );
@@ -43,7 +50,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsAuthenticated(false);
     localStorage.removeItem("user");
     localStorage.removeItem("isAuthenticated");
-    navigate("/");
+    navigate(ROUTES.BASE);
   }, [navigate]);
 
   return (

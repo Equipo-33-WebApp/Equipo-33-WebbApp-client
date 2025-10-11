@@ -2,6 +2,8 @@ import { Button } from "../ui/Button";
 import type { NavLink } from "./types";
 import { useAuth } from "@/hooks/useAuth";
 import { ROLE_OPERATOR, ROLE_PYME } from "@/constants/roles";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/constants/routes";
 
 const navLinks: NavLink[] = [
   { label: "Inicio", href: "#" },
@@ -11,7 +13,8 @@ const navLinks: NavLink[] = [
 ];
 
 export const Header = () => {
-  const { isAuthenticated, login, logout } = useAuth();
+  const { isAuthenticated, login } = useAuth();
+  const navigate = useNavigate();
 
   return (
     // Usa bg-background y text-primary
@@ -44,7 +47,7 @@ export const Header = () => {
             </defs>
           </svg>
           {/* Título usa text-text */}
-          <h1 className="text-xl font-bold text-text">Velox</h1>
+          <h1 className="text-xl font-bold text-text">CrediPyme</h1>
         </div>
 
         <nav className="hidden items-center gap-8 md:flex">
@@ -67,7 +70,7 @@ export const Header = () => {
                 <Button onClick={() => login(ROLE_OPERATOR)} variant="accent">Operador</Button>
               </>
             ):(
-              <Button onClick={() => logout()} variant="destructive">Logout</Button>
+              <Button onClick={() => navigate(ROUTES.DASHBOARD.BASE)} variant="accent">Dashboard</Button>
             )
           }
         </div>
