@@ -1,46 +1,4 @@
-export interface LoginData {
-  email: string;
-  password: string;
-}
-
-export interface AuthResponse {
-  status: string;
-  data: {
-    token: string;
-    user: {
-      id: string;
-      name: string;
-      email: string;
-    };
-  };
-}
-
-export interface RegisterData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  phone: string;
-  role?: string; 
-}
-
-export interface RegisterResponse {
-  status: string;
-  data: {
-    user: {
-      id: number;
-      firstName: string;
-      lastName: string;
-      email: string;
-      phone: string;
-      role: string;
-      status: string;
-      createdAt: string;
-      updatedAt: string;
-      deletedAt: string | null;
-    };
-  };
-}
+import type { AuthResponse, LoginData, RegisterData, RegisterResponse } from "../types";
 
 const API_URL = import.meta.env.VITE_API_URL || "https://e-commerce-api.academlo.tech/api/v1";
 
@@ -74,7 +32,7 @@ export const registerUser = async (
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
-console.log(res)
+    console.log(res)
     if (!res.ok) {
       const errorText = await res.text();
       console.error("Error de registro:", errorText);

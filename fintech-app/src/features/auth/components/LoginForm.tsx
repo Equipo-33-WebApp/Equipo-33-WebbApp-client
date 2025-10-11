@@ -1,7 +1,11 @@
 import { useState } from "react";
-import { loginUser } from "@/api/auth";
+import { loginUser } from "@/features/auth/services/auth";
 import { cn } from "@/utils/cn";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/Button";
+import { ROUTES } from "@/constants/routes";
+import { useAuth } from "@/hooks/useAuth";
+import { ROLE_OPERATOR, ROLE_PYME } from "@/constants/roles";
 
 
 export default function LoginForm() {
@@ -9,7 +13,8 @@ export default function LoginForm() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
+
+    const { login, testLogin } = useAuth();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -22,13 +27,10 @@ export default function LoginForm() {
             const res = await loginUser({ email, password });
             console.log("Acceso Exitoso", res);
 
-            // Guarda en localStorage
-            if (res?.data?.token) {
-                localStorage.setItem("token", res.data.token);
-                localStorage.setItem("user", JSON.stringify(res.data.user));
-                // Redirige al dashboard
-                navigate("/dashboard");
-            }
+            // Guarda en localStorage y redirige a dashboard dentro del hook 
+            // (Lógica en /context/AuthProvider.tsx)
+            if (res?.data?.token) 
+                login(res.data.token, res.data.user)
 
         } catch {
             setError("Correo o contraseña incorrectos");
@@ -93,14 +95,29 @@ export default function LoginForm() {
             >
                 {loading ? "Cargando..." : "Ingresar"}
             </button>
+            
+            {/* Temporal para testing rápido de roles hasta que estén listos los endpoints */}
+            <div className="flex justify-around py-4">
+                <Button onClick={() => testLogin(ROLE_PYME)} variant="accent">Pyme</Button>
+                <Button onClick={() => testLogin(ROLE_OPERATOR)} variant="accent">Operador</Button>
+            </div>
 
             <p className="text-center text-sm mt-6 text-gray-500">
                 ¿No tienes cuenta?{" "}
                 <Link
-                    to="/register"
+                    to={ROUTES.REGISTER}
                     className="text-[--color-accent] font-semibold hover:underline"
                 >
                     Registrate aquí
+                </Link>
+            </p>
+
+            <p className="text-center text-sm mt-6 text-gray-500">
+                <Link
+                    to={ROUTES.BASE}
+                    className="text-[--color-accent] font-semibold hover:underline"
+                >
+                    Ir al Landing
                 </Link>
             </p>
         </form>

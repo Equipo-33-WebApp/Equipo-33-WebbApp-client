@@ -1,4 +1,4 @@
-import RegisterForm from "@/components/forms/RegisterForm";
+import RegisterForm from "@/features/auth/components/RegisterForm";
 
 export default function RegisterPage() {
   return (
@@ -7,7 +7,7 @@ export default function RegisterPage() {
         {/* Panel izquierdo - texto / marca (visible en md+) */}
         <div className="text-white md:w-1/2 mb-6 md:mb-0 md:pr-8 text-center md:text-left">
           <h1 className="text-4xl md:text-5xl font-extrabold mb-3 leading-tight">
-            Bienvenido a <span className="text-[var(--color-accent)]">Ventus</span>
+            Bienvenido a <span className="text-[var(--color-accent)]">CrediPyme</span>
           </h1>
           <p className="text-gray-200 text-sm md:text-base max-w-md mx-auto md:mx-0">
             Registra tu empresa para acceder a herramientas financieras y gestionar tu crecimiento con confianza.

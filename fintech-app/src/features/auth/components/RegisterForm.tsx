@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { cn } from "@/utils/cn";
-import { registerUser } from "@/api/auth";
+import { registerUser } from "@/features/auth/services/auth";
+import { ROUTES } from "@/constants/routes";
 
 export default function RegisterForm() {
     const navigate = useNavigate();
@@ -48,7 +49,7 @@ export default function RegisterForm() {
             localStorage.setItem("user", JSON.stringify(res.data.user));
 
 
-            navigate("/login");
+            navigate(ROUTES.LOGIN);
         } catch (err) {
             console.error(err);
             setError("Error al registrarse. Inténtalo nuevamente.");

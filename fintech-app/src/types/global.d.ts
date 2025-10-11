@@ -3,14 +3,20 @@
 type UserRole = "pyme" | "operator" ;
 
 interface User {
-  id: string;
+  id: number;
   firstName: string;
   lastName: string;
   email: string;
   role: UserRole;
   avatar?: string;
   businessType: string;
-  token?: string;
+
+  // Nuevos campos
+  phone?: string;
+  status?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  deletedAt?: string | null;
 }
 
 interface ApiResponse<T> {

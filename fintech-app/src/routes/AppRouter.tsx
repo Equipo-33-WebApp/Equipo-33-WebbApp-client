@@ -4,9 +4,10 @@ import PrivateRoute from "./PrivateRoute";
 import { ALL_ROLES } from "@/constants/roles";
 
 import { LandingPage } from "@/pages/LandingPage";
-import LoginPage from "@/pages/auth/LoginPage";
-import RegisterPage from "@/pages/auth/RegisterPage";
+import LoginPage from "@/features/auth/pages/LoginPage";
+import RegisterPage from "@/features/auth/pages/RegisterPage";
 import { DashboardRoutes } from "./DashboardRoutes";
+import { ROUTES } from "@/constants/routes";
 
 // Según que ruta privada se use, especificar roles con las constantes:
 // ALL_ROLES, ROLE_PYME o ROLE_OPERATOR
@@ -14,9 +15,9 @@ import { DashboardRoutes } from "./DashboardRoutes";
 const AppRouter: React.FC = () => {
   return (
     <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
+      <Route path={ROUTES.BASE} element={<LandingPage />} />
+      <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+      <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
       <Route
         path="/dashboard/*"
         element={

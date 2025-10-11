@@ -1,7 +1,6 @@
 import { Button } from "../ui/Button";
 import type { NavLink } from "./types";
 import { useAuth } from "@/hooks/useAuth";
-import { ROLE_OPERATOR, ROLE_PYME } from "@/constants/roles";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
 
@@ -13,7 +12,7 @@ const navLinks: NavLink[] = [
 ];
 
 export const Header = () => {
-  const { isAuthenticated, login } = useAuth();
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   return (
@@ -65,10 +64,7 @@ export const Header = () => {
 
         <div className="flex items-center gap-4">
           {!isAuthenticated ? (
-              <>
-                <Button onClick={() => login(ROLE_PYME)} variant="accent">Pyme</Button>
-                <Button onClick={() => login(ROLE_OPERATOR)} variant="accent">Operador</Button>
-              </>
+              <Button onClick={() => navigate(ROUTES.LOGIN)} variant="accent">Iniciar Sesión</Button>
             ):(
               <Button onClick={() => navigate(ROUTES.DASHBOARD.BASE)} variant="accent">Dashboard</Button>
             )
