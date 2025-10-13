@@ -61,7 +61,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ role }) => {
     <div className="min-h-screen flex">
       <aside
         className={cn(
-          "bg-gradient-to-b from-gray-900 to-sky-950 text-white flex flex-col p-4 fixed h-screen z-50 transition-all duration-300",
+          "bg-gradient-to-b from-gray-900 to-sky-950 text-white flex flex-col p-4 fixed h-[100dvh] z-50 transition-all duration-300",
           collapsed ? "w-[70px]" : "w-[240px] md:w-64",
           !collapsed && ""
         )}
