@@ -10,7 +10,7 @@ interface PieChartCardProps {
   }[];
 }
 export const PieChartCard: React.FC<PieChartCardProps> = ({ title, data }) => (
-  <div className="p-6 bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center">
+  <div className="p-6 bg-white rounded-2xl overflow-x-scroll shadow-sm border border-gray-100 flex flex-col items-center">
     <h2 className="text-lg font-semibold mb-4 text-gray-800">{title}</h2>
     <PieChart width={240} height={240}>
       <Pie data={data} dataKey="value" nameKey="name" outerRadius={90} label>

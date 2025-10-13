@@ -6,7 +6,7 @@ interface UserCardProps {
 }
 
 export const UserCard: React.FC<UserCardProps> = ({ user }) => (
-  <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-4 flex items-center gap-4">
+  <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-4 flex flex-col sm:flex-row justify-start items-start gap-4">
     {user && (
       <>
         <picture>

@@ -3,6 +3,7 @@ import { requestsMock } from "@/features/dashboard/mocks/requestsMock";
 import { STATUS_PENDING } from "@/constants/requestStatus";
 import { SummaryCard } from "../../components/SummaryCard";
 import { RequestTable } from "../../components/operator/RequestTable";
+import { StatesLegend } from "../../components/StatesLegend";
 
 export const OperatorReview: React.FC = () => {
   const pending = requestsMock.filter(r => r.status === STATUS_PENDING).length;
@@ -18,7 +19,9 @@ export const OperatorReview: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+
+      <div className="flex flex-wrap gap-4">
+        <StatesLegend />
         <SummaryCard label="Pendientes" value={pending} color="bg-yellow-50 text-yellow-700" />
       </div>
 

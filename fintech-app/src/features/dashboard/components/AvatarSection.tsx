@@ -6,7 +6,7 @@ export interface HeaderInfoProps {
 }
 
 export const AvatarSection: React.FC<HeaderInfoProps> = ({ formData }) => (
-  <div className="flex items-center gap-4">
+  <div className="flex flex-col sm:flex-row items-center gap-4">
     <img
       src={formData.avatar || defaultAvatar}
       alt="Avatar de usuario"

@@ -18,7 +18,7 @@ export const LineChartCard: React.FC<LineChartCardProps> = ({ title, data }) => 
   ];
 
   return (
-    <div className="p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
+    <div className="p-6 bg-white rounded-2xl shadow-sm border border-gray-100 hidden md:block">
       <h2 className="text-lg font-semibold mb-4 text-gray-800">{title}</h2>
       <div className="flex flex-col md:flex-row gap-4">
         <div className="flex-1 min-w-[320px] h-[250px]">

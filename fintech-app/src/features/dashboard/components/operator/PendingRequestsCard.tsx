@@ -20,7 +20,7 @@ export const PendingRequestsCard: React.FC = () => {
           pendingRequests.map((req) => (
             <div
               key={req.id}
-              className="p-3 bg-gray-50 rounded-lg flex justify-between items-center hover:bg-blue-50 cursor-pointer transition"
+              className="p-3 bg-gray-50 rounded-lg flex flex-col sm:flex-row justify-between items-center hover:bg-blue-50 cursor-pointer transition"
             //   onClick={() => navigate(`/dashboard/op/requests/${req.id}`)}
             >
               <div>

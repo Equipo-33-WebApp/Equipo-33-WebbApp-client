@@ -29,7 +29,7 @@ export const PymeApplications: React.FC = () => {
 
         <button 
           onClick={() => navigate(ROUTES.DASHBOARD.PYME.REQUEST)}
-          className="inline-flex items-center gap-2 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition"
+          className="inline-flex w-fit items-center gap-2 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition"
         >
           + Nueva Solicitud
         </button>
