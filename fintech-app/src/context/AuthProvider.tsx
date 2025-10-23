@@ -4,41 +4,47 @@ import { ROLE_PYME } from "@/constants/roles";
 import { AuthContext } from "./authContext";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
+import Cookies from "js-cookie";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(() => {
     const stored = localStorage.getItem("user");
     return stored ? JSON.parse(stored) : null;
   });
-
-  const [isAuthenticated, setIsAuthenticated] = useState(() => !!user);
+  
+  const [isAuthenticated, setIsAuthenticated] = useState(() => !!Cookies.get("token"));
+  const [hasPymeData, setHasPymeData] = useState(false);
+  const [hasKyc, setHasKyc] = useState(false);
+  const [isFullyRegistered, setIsFullyRegistered] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem("isAuthenticated", JSON.stringify(isAuthenticated));
-  }, [isAuthenticated]);
+    if (user) {
+      const hasPyme = !!user.pymeData;
+      const hasKycValidated = !!user.pymeData?.hasKycValidated;
+
+      setHasPymeData(hasPyme);
+      setHasKyc(hasKycValidated);
+      setIsFullyRegistered(isAuthenticated && hasPyme && hasKycValidated);
+    } else {
+      setHasPymeData(false);
+      setHasKyc(false);
+      setIsFullyRegistered(false);
+    }
+  }, [user, isAuthenticated]);
 
   const navigate = useNavigate();
 
   const login = useCallback(
-    (token: string, user: User) => {
-      const mockUser: User = {
-        id: user.id || 1,
-        firstName: user.firstName || "Javier",
-        lastName: user.lastName || "López",
-        email: user.email || "javi64@example.com",
-        avatar: user.avatar || "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=200",
-        businessType: user.businessType || "Comercial",
-        role: "pyme",
-      };
-
-      setUser(mockUser);
+    (token: string, user: User, fromRegister = false) => {
+      setUser(user);
       setIsAuthenticated(true);
 
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(mockUser));
-      localStorage.setItem("isAuthenticated", "true");
+      Cookies.set("token", token, { expires: 1, secure: true, sameSite: "strict" });
+      localStorage.setItem("user", JSON.stringify(user));
 
-      if (mockUser?.role === ROLE_PYME)
+      if (fromRegister) return;
+
+      if (user?.role === ROLE_PYME)
         navigate(ROUTES.DASHBOARD.PYME.OVERVIEW)
       else
         navigate(ROUTES.DASHBOARD.OPERATOR.OVERVIEW)
@@ -46,43 +52,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     [navigate]
   );
 
-  const testLogin = useCallback(
-    (mockRole: UserRole = ROLE_PYME) => {
-      const mockUser: User = {
-        id: 1,
-        firstName: "Javier",
-        lastName: "López",
-        email: "javi64@example.com",
-        avatar: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=200",
-        businessType: "Comercial",
-        role: mockRole,
-      };
+  const updateUserPyme = useCallback((pymeData: PymeUserData | null) => {
+    setUser(prev => {
+      if (!prev || !pymeData) return prev;
 
-      setUser(mockUser);
-      setIsAuthenticated(true);
+      const updatedUser = { ...prev, pymeData };
 
-      localStorage.setItem("user", JSON.stringify(mockUser));
-      localStorage.setItem("isAuthenticated", "true");
-
-      if (mockUser?.role === ROLE_PYME)
-        navigate(ROUTES.DASHBOARD.PYME.OVERVIEW)
-      else
-        navigate(ROUTES.DASHBOARD.OPERATOR.OVERVIEW)
-    },
-    [navigate]
-  );
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      return updatedUser;
+    });
+  }, []);
 
   const logout = useCallback(() => {
     setUser(null);
     setIsAuthenticated(false);
+    Cookies.remove("token");
     localStorage.removeItem("user");
-    localStorage.removeItem("token");
-    localStorage.removeItem("isAuthenticated");
     navigate(ROUTES.BASE);
   }, [navigate]);
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, testLogin, logout }}>
+    <AuthContext.Provider 
+      value={{ user, isAuthenticated, hasPymeData, hasKyc, isFullyRegistered, login, updateUserPyme, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

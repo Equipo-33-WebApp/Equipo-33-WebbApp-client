@@ -1,14 +1,19 @@
 import React from "react";
 import { RequestCard } from "@/features/dashboard/components/pyme/RequestCard";
 import { requestsMock } from "@/features/dashboard/mocks/requestsMock";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { SummaryCard } from "../../components/SummaryCard";
 import { useRequestStats } from "../../hooks/useRequestStats";
 import { ROUTES } from "@/constants/routes";
+import { useAuth } from "@/hooks/useAuth";
 
 export const PymeApplications: React.FC = () => {
   const { total, approved, pending, rejected } = useRequestStats();
   const navigate = useNavigate();
+
+  const { isFullyRegistered } = useAuth();
+
+  if (!isFullyRegistered) return <Navigate to={ROUTES.DASHBOARD.BASE} replace />
 
   const summaryInfo = [
     { label: "Solicitudes Totales", value: total, color: "bg-blue-50 text-blue-700" },
@@ -29,7 +34,7 @@ export const PymeApplications: React.FC = () => {
 
         <button 
           onClick={() => navigate(ROUTES.DASHBOARD.PYME.REQUEST)}
-          className="inline-flex w-fit items-center gap-2 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition"
+          className="inline-flex w-fit items-center gap-2 px-5 py-2 bg-accent hover:bg-accent/80 text-white font-medium rounded-lg shadow-md transition"
         >
           + Nueva Solicitud
         </button>

@@ -1,11 +1,13 @@
-import type { AuthResponse, LoginData, RegisterData, RegisterResponse } from "../types";
+import { getUserSubFromToken } from "@/utils/parseToken";
+import type { AuthResponse, LoginData, UserRegisterData, RegisterResponse, UserUpdateData } from "../types";
+import { API_URL } from "@/constants/api";
 
-const API_URL = import.meta.env.VITE_API_URL || "https://e-commerce-api.academlo.tech/api/v1";
+
 
 /* --- LOGIN --- */
 export const loginUser = async (data: LoginData): Promise<AuthResponse> => {
   try {
-    const res = await fetch(`${API_URL}/users/login`, {
+    const res = await fetch(`${API_URL}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
@@ -13,36 +15,78 @@ export const loginUser = async (data: LoginData): Promise<AuthResponse> => {
 
     if (!res.ok) throw new Error("Credenciales inválidas");
 
-    return await res.json();
+    return res.json();
   } catch (error) {
     console.error("Error al iniciar sesión:", error);
     throw error;
   }
 };
 
+export const getUserByAuthId = async (token: string): Promise<User> => {
+  const authId = getUserSubFromToken(token);
+  if (!authId) throw new Error("No se encontró authId en el token");
+
+  const userRes = await fetch(`${API_URL}/users/auth/${authId}`, {
+    method: "GET",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!userRes.ok) {
+    const errorText = await userRes.text();
+    console.error("Error al obtener datos del usuario:", errorText);
+    throw new Error("No se pudo obtener la información del usuario");
+  }
+
+  return await userRes.json();
+}
+
+export const updateUserByUserId = async (userId: string, token: string, data: UserUpdateData) => {
+  const updateRes = await fetch(`${API_URL}/users/${userId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      firstName: data.firstName,
+      lastName: data.lastName,
+    }),
+  });
+
+  if (!updateRes.ok) {
+    const errorText = await updateRes.text();
+    console.error("Error al completar info de usuario:", errorText);
+    throw new Error("No se pudieron guardar los datos personales");
+  }
+}
+
 
 /* --- REGISTRO --- */
-export const registerUser = async (
-  data: RegisterData
-): Promise<RegisterResponse> => {
+export const registerUser = async (data: UserRegisterData): Promise<RegisterResponse> => {
   try {
-    
-    const res = await fetch(`${API_URL}/users`, {
+    const registerRes = await fetch(`${API_URL}/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        email: data.email,
+        password: data.password,
+      }),
     });
-    console.log(res)
-    if (!res.ok) {
-      const errorText = await res.text();
-      console.error("Error de registro:", errorText);
+
+    if (!registerRes.ok) {
+      const errorText = await registerRes.text();
+      console.error("Error al registrar en auth:", errorText);
       throw new Error("No se pudo registrar el usuario");
     }
 
-    const responseData: RegisterResponse = await res.json();
-    return responseData;
+    const createdUser: User = await registerRes.json();
+    const userId = createdUser?.id;
+
+    if (!userId) throw new Error("No se recibió ID del usuario tras el registro");
+
+    return { userId };
   } catch (error) {
-    console.error("Error al registrarse:", error);
+    console.error("Error en registerUser completo:", error);
     throw error;
   }
 };

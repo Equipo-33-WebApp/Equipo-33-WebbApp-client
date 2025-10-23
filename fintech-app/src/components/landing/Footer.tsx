@@ -68,7 +68,7 @@ export const Footer = () => {
         <div className="mt-8 text-center">
           {/* Copyright usa text-text/50 */}
           <p className="text-sm text-text/50">
-            © 2025 Velox. Todos los derechos reservados.
+            © 2025 CrediPyme. Todos los derechos reservados.
           </p>
         </div>
       </div>

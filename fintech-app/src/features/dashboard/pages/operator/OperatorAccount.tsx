@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { AvatarSection } from "../../components/AvatarSection";
 import { AccountFields } from "../../components/AccountFields";
 import { AccountActions } from "../../components/AccountActions";
 import type { DashboardOperatorAccountDataForm } from "../../types";
+import { UserCard } from "../../components/UserCard";
 
 
 export const OperatorAccount: React.FC = () => {
@@ -12,8 +12,6 @@ export const OperatorAccount: React.FC = () => {
     firstName: user?.firstName || "",
     lastName: user?.lastName || "",
     email: user?.email || "",
-    avatar: user?.avatar || "",
-    operatorNumber: 5433235
   });
   const [isEditing, setIsEditing] = useState(false);
 
@@ -36,8 +34,8 @@ export const OperatorAccount: React.FC = () => {
         <h1 className="text-2xl font-semibold text-gray-900">Configuración de Cuenta</h1>
       </header>
 
+      <UserCard user={user} />
       <form onSubmit={handleSave} className="bg-white rounded-2xl shadow-md border border-gray-100 p-6 space-y-6">
-        <AvatarSection formData={formData} />
         <AccountFields 
           formData={formData} 
           isEditing={isEditing} 

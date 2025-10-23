@@ -1,30 +1,29 @@
 export interface DashboardMenuItem {
-    id: string,
-    label: string,
-    to: string,
-    icon: React.ElementType
+  id: string,
+  label: string,
+  to: string,
+  icon: React.ElementType
 }
 
 interface DashboardAccountDataFormBase {
   firstName: string
   lastName: string
   email: string
-  avatar: string
 }
 
 export interface DashboardPymeAccountDataForm
   extends DashboardAccountDataFormBase {
-  businessType: string
+  sector?: string
 }
 
 export interface DashboardOperatorAccountDataForm
   extends DashboardAccountDataFormBase {
-  operatorNumber: number
+  operatorNumber?: number
 }
 
 export interface DashboardRequestSummaryData {
-    total: number
-    approved: number
-    pending: number
-    rejected: number
+  total: number
+  approved: number
+  pending: number
+  rejected: number
 }

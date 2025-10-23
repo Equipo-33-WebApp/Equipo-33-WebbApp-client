@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { AvatarSection } from "../../components/AvatarSection";
 import { AccountFields } from "../../components/AccountFields";
 import { AccountActions } from "../../components/AccountActions";
 import type { DashboardPymeAccountDataForm } from "../../types";
+import { UserCard } from "../../components/UserCard";
 
 
 export const PymeAccount: React.FC = () => {
@@ -12,8 +12,6 @@ export const PymeAccount: React.FC = () => {
     firstName: user?.firstName || "",
     lastName: user?.lastName || "",
     email: user?.email || "",
-    businessType: user?.businessType || "",
-    avatar: user?.avatar || ""
   });
   const [isEditing, setIsEditing] = useState(false);
 
@@ -39,8 +37,9 @@ export const PymeAccount: React.FC = () => {
         </p>
       </header>
 
+      <UserCard user={user} />
       <form onSubmit={handleSave} className="bg-white rounded-2xl shadow-md border border-gray-100 p-6 space-y-6">
-        <AvatarSection formData={formData} />
+        <h2 className="text-xl font-semibold text-gray-800">Información de la Cuenta</h2>
         <AccountFields 
           formData={formData} 
           isEditing={isEditing} 

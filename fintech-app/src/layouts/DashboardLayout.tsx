@@ -36,7 +36,7 @@ const operatorMenu: DashboardMenuItem[] = [
 ];
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ role }) => {
-  const { logout } = useAuth();
+  const { logout, isFullyRegistered } = useAuth();
   const navigate = useNavigate();
   const menuItems = role === ROLE_PYME ? pymeMenu : operatorMenu;
 
@@ -94,14 +94,24 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ role }) => {
         <nav className="flex flex-col gap-2">
           {menuItems.map((item) => {
             const Icon = item.icon;
+
+            const isDisabled =
+              !isFullyRegistered &&
+              (item.id === "pyme-applications" || item.id === "request");
+
             return (
               <NavLink
                 key={item.id}
-                to={item.to}
+                to={isDisabled ? "#" : item.to}
+                onClick={(e) => isDisabled && e.preventDefault()}
                 className={({ isActive }) =>
                   cn(
-                    "px-2 py-2 rounded-md transition text-gray-400! hover:text-white! flex gap-4",
-                    isActive ? "bg-primary text-white!" : "hover:bg-gray-800",
+                    "px-2 py-2 rounded-md transition flex gap-4",
+                    isDisabled
+                      ? "text-gray-500 cursor-not-allowed opacity-60 pointer-events-none"
+                      : isActive
+                        ? "bg-primary text-white!"
+                        : "text-gray-400! hover:text-white! hover:bg-gray-800"
                   )
                 }
                 title={collapsed ? item.label : ""}
@@ -124,7 +134,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ role }) => {
         <nav className="mt-auto flex flex-col gap-2">
           {commonButtons.map((item) => {
             const Icon = item.icon;
-            return(
+            return (
               <Button
                 key={item.id}
                 onClick={item.onClick}

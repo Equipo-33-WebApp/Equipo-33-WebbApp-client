@@ -9,9 +9,9 @@ export interface AccountFieldsProps {
 
 export const AccountFields: React.FC<AccountFieldsProps> = ({ formData, isEditing, handleChange }) => {
 
-  const isPyme = 
-  (data: DashboardPymeAccountDataForm | DashboardOperatorAccountDataForm): 
-  data is DashboardPymeAccountDataForm => "businessType" in data;
+  // const isPyme = 
+  // (data: DashboardPymeAccountDataForm | DashboardOperatorAccountDataForm): 
+  // data is DashboardPymeAccountDataForm => "sector" in data;
 
   return (
     <div className="grid sm:grid-cols-2 gap-4 pt-2">
@@ -53,41 +53,6 @@ export const AccountFields: React.FC<AccountFieldsProps> = ({ formData, isEditin
           className="mt-1 w-full rounded-lg border px-3 py-2 text-sm bg-gray-50 cursor-not-allowed"
         />
       </div>
-
-      {isPyme(formData) ? (
-        <div>
-          <label className="text-sm text-gray-600">Tipo de empresa</label>
-          <select
-            name="businessType"
-            value={formData.businessType}
-            disabled={!isEditing}
-            onChange={handleChange}
-            className={`mt-1 w-full rounded-lg border px-3 py-2 text-sm ${
-              isEditing ? "border-gray-300" : "bg-gray-50 cursor-not-allowed"
-            }`}
-          >
-            <option value="">Seleccionar</option>
-            <option value="PyME">PyME</option>
-            <option value="Autónomo">Autónomo</option>
-            <option value="Cooperativa">Cooperativa</option>
-            <option value="Startup">Startup</option>
-          </select>
-        </div>
-      ) : (
-        <div>
-          <label className="text-sm text-gray-600">Número de operador</label>
-          <input
-            type="text"
-            name="operatorNumber"
-            value={formData.operatorNumber}
-            disabled={!isEditing}
-            onChange={handleChange}
-            className={`mt-1 w-full rounded-lg border px-3 py-2 text-sm ${
-              isEditing ? "border-gray-300" : "bg-gray-50 cursor-not-allowed"
-            }`}
-          />
-        </div>
-      )}
     </div>
 
   );

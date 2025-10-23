@@ -1,126 +1,119 @@
 import { useState } from "react";
-import { loginUser } from "@/features/auth/services/auth";
+import { getUserByAuthId, loginUser } from "@/features/auth/services/auth";
 import { cn } from "@/utils/cn";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/Button";
 import { ROUTES } from "@/constants/routes";
 import { useAuth } from "@/hooks/useAuth";
-import { ROLE_OPERATOR, ROLE_PYME } from "@/constants/roles";
+import { getPymeByAuthId } from "../services/pymeService";
 
 
 export default function LoginForm() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-    const { login, testLogin } = useAuth();
+  const { login } = useAuth();
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError("");
-        setLoading(true);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
 
-        try {
-            console.log(email, password);
-            // llamamos a la funcion de login            
-            const res = await loginUser({ email, password });
-            console.log("Acceso Exitoso", res);
+    try {      
+      const res = await loginUser({ email, password });
+      
+      if (res?.token) {
+        const userData = await getUserByAuthId(res.token);
+        const userPyme = await getPymeByAuthId(res.token);
 
-            // Guarda en localStorage y redirige a dashboard dentro del hook 
-            // (Lógica en /context/AuthProvider.tsx)
-            if (res?.data?.token) 
-                login(res.data.token, res.data.user)
+        const user = { ...userData, pymeData: userPyme };
+        login(res.token, user)
+      }
 
-        } catch {
-            setError("Correo o contraseña incorrectos");
-        } finally {
-            setLoading(false);
-        }
-    };
+    } catch {
+      setError("Correo o contraseña incorrectos");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    return (
-        <form
-            onSubmit={handleSubmit}
-            className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md mx-auto"
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md mx-auto"
+    >
+      <h2 className="text-3xl font-extrabold text-center text-[--color-text] mb-8">
+        Iniciar sesión
+      </h2>
+
+      {error && (
+        <p className="text-[--color-error] text-center mb-4 bg-red-50 py-2 rounded-lg">
+          {error}
+        </p>
+      )}
+
+      <div className="mb-5 text-left">
+        <label className="block mb-2 font-medium text-[--color-text] text-sm">
+          Correo electrónico
+        </label>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[--color-primary] focus:border-transparent transition"
+          placeholder="tucorreo@correo.com"
+        />
+      </div>
+
+      <div className="mb-6 text-left">
+        <label className="block mb-2 font-medium text-[--color-text] text-sm">
+          Contraseña
+        </label>
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[--color-primary] focus:border-transparent transition"
+          placeholder="********"
+        />
+      </div>
+
+
+      <button
+        type="submit"
+        disabled={loading}
+        className={cn(
+          "w-full py-3 rounded-xl font-semibold text-lg transition-all duration-300 shadow-md transform",
+          loading
+            ? "bg-primary/70 text-white cursor-not-allowed"
+            : "bg-primary text-white hover:bg-[#163a78] active:bg-[#122f63] hover:scale-[1.02] hover:shadow-lg"
+        )}
+      >
+        {loading ? "Cargando..." : "Ingresar"}
+      </button>
+
+      <p className="text-center text-sm mt-6 text-gray-500">
+        ¿No tienes cuenta?{" "}
+        <Link
+          to={ROUTES.REGISTER}
+          className="text-[--color-accent] font-semibold hover:underline"
         >
-            <h2 className="text-3xl font-extrabold text-center text-[--color-text] mb-8">
-                Iniciar sesión
-            </h2>
+          Registrate aquí
+        </Link>
+      </p>
 
-            {error && (
-                <p className="text-[--color-error] text-center mb-4 bg-red-50 py-2 rounded-lg">
-                    {error}
-                </p>
-            )}
-
-            <div className="mb-5 text-left">
-                <label className="block mb-2 font-medium text-[--color-text] text-sm">
-                    Correo electrónico
-                </label>
-                <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[--color-primary] focus:border-transparent transition"
-                    placeholder="tucorreo@correo.com"
-                />
-            </div>
-
-            <div className="mb-6 text-left">
-                <label className="block mb-2 font-medium text-[--color-text] text-sm">
-                    Contraseña
-                </label>
-                <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[--color-primary] focus:border-transparent transition"
-                    placeholder="********"
-                />
-            </div>
-
-
-            <button
-                type="submit"
-                disabled={loading}
-                className={cn(
-                    "w-full py-3 rounded-xl font-semibold text-lg transition-all duration-300 shadow-md transform",
-                    loading
-                        ? "bg-primary/70 text-white cursor-not-allowed"
-                        : "bg-primary text-white hover:bg-[#163a78] active:bg-[#122f63] hover:scale-[1.02] hover:shadow-lg"
-                )}
-            >
-                {loading ? "Cargando..." : "Ingresar"}
-            </button>
-            
-            {/* Temporal para testing rápido de roles hasta que estén listos los endpoints */}
-            <div className="flex justify-around py-4">
-                <Button onClick={() => testLogin(ROLE_PYME)} variant="accent">Pyme</Button>
-                <Button onClick={() => testLogin(ROLE_OPERATOR)} variant="accent">Operador</Button>
-            </div>
-
-            <p className="text-center text-sm mt-6 text-gray-500">
-                ¿No tienes cuenta?{" "}
-                <Link
-                    to={ROUTES.REGISTER}
-                    className="text-[--color-accent] font-semibold hover:underline"
-                >
-                    Registrate aquí
-                </Link>
-            </p>
-
-            <p className="text-center text-sm mt-6 text-gray-500">
-                <Link
-                    to={ROUTES.BASE}
-                    className="text-[--color-accent] font-semibold hover:underline"
-                >
-                    Ir al Landing
-                </Link>
-            </p>
-        </form>
-    );
+      <p className="text-center text-sm mt-6 text-gray-500">
+        <Link
+          to={ROUTES.BASE}
+          className="text-[--color-accent] font-semibold hover:underline"
+        >
+          Ir al Landing
+        </Link>
+      </p>
+    </form>
+  );
 }
 
