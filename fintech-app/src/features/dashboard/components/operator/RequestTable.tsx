@@ -38,11 +38,11 @@ export const RequestTable: React.FC<RequestTableProps> = ({ requests }) => {
                       : "bg-red-100 text-red-700"
                   }`}
               >
-                {req.business}
+                {req.sector}
               </td>
               <td className="px-4 py-2 hidden sm:table-cell">${req.amount.toLocaleString()}</td>
               <td className="px-4 py-2 hidden md:table-cell">
-                {new Date(req.date).toLocaleDateString()}
+                {new Date(req.updatedAt).toLocaleDateString()}
               </td>
               <td className="px-4 py-2 text-right">
                 <button className="text-blue-600 hover:underline font-medium">

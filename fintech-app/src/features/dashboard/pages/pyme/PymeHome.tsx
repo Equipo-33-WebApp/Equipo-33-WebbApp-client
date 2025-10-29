@@ -3,14 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { UserCard } from "../../components/UserCard";
 import { HomeStatsCard } from "../../components/HomeStatsCard";
-import { useRequestStats } from "../../hooks/useRequestStats";
+import { useRequest } from "../../hooks/useRequest";
 import { ROUTES } from "@/constants/routes";
 import { CheckCircledIcon, CircleIcon } from "@/components/icons";
 
 
 export const PymeHome: React.FC = () => {
   const { user, isAuthenticated, hasPymeData, hasKyc, isFullyRegistered } = useAuth();
-  const stats = useRequestStats();
+  const { stats } = useRequest();
   const navigate = useNavigate();
 
   return (

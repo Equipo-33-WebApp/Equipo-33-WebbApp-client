@@ -4,12 +4,12 @@ import { useAuth } from "@/hooks/useAuth";
 import { UserCard } from "../../components/UserCard";
 import { PendingRequestsCard } from "../../components/operator/PendingRequestsCard";
 import { HomeStatsCard } from "../../components/HomeStatsCard";
-import { useRequestStats } from "../../hooks/useRequestStats";
+import { useRequest } from "../../hooks/useRequest";
 
 
 export const OperatorHome: React.FC = () => {
   const { user } = useAuth();
-  const stats = useRequestStats();
+  const { stats } = useRequest();
 
   return (
     <section className="space-y-6 animate-fade-right">

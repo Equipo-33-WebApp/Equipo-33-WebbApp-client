@@ -1,12 +1,13 @@
 import React from "react";
-import { requestsMock } from "@/features/dashboard/mocks/requestsMock";
 import { STATUS_PENDING } from "@/constants/requestStatus";
 import { SummaryCard } from "../../components/SummaryCard";
 import { RequestTable } from "../../components/operator/RequestTable";
 import { StatesLegend } from "../../components/StatesLegend";
+import { useRequest } from "../../hooks/useRequest";
 
 export const OperatorReview: React.FC = () => {
-  const pending = requestsMock.filter(r => r.status === STATUS_PENDING).length;
+  const { requests } = useRequest();
+  const pending = requests.filter(r => r.status === STATUS_PENDING).length;
 
   return (
     <section className="space-y-8 animate-fade-right">
@@ -26,7 +27,7 @@ export const OperatorReview: React.FC = () => {
       </div>
 
       <div className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-x-auto">
-        <RequestTable requests={requestsMock} />
+        <RequestTable requests={requests} />
       </div>
     </section>
   );

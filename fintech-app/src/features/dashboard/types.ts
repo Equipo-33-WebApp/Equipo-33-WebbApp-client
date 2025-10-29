@@ -25,5 +25,8 @@ export interface DashboardRequestSummaryData {
   total: number
   approved: number
   pending: number
+  onReview: number
   rejected: number
 }
+
+

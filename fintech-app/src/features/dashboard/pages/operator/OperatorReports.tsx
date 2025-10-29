@@ -2,10 +2,10 @@ import React from "react";
 import { KpiCard } from "../../components/operator/KpiCard";
 import { PieChartCard } from "../../components/operator/PieChartCard";
 import { LineChartCard } from "../../components/operator/LineChartCard";
-import { useRequestStats } from "../../hooks/useRequestStats";
+import { useRequest } from "../../hooks/useRequest";
 
 export const OperatorReports: React.FC = () => {
-  const { total, approved, pending, rejected } = useRequestStats();
+  const { total, approved, pending, rejected } = useRequest().stats;
 
   const distributionData = [
     { name: "Aprobadas", value: approved, color: "#22c55e" },

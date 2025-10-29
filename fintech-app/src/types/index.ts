@@ -1,8 +1,10 @@
 export interface RequestData {
     id: string
-    business: string
     amount: number
-    date: string
+    purpose: string
     status: string
-    flaggedKyc?: boolean
+    updatedAt: string
+    pymeId: string
+    companyName: string
+    sector: string
 }

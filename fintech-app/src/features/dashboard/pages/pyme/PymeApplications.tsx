@@ -3,12 +3,12 @@ import { RequestCard } from "@/features/dashboard/components/pyme/RequestCard";
 import { requestsMock } from "@/features/dashboard/mocks/requestsMock";
 import { Navigate, useNavigate } from "react-router-dom";
 import { SummaryCard } from "../../components/SummaryCard";
-import { useRequestStats } from "../../hooks/useRequestStats";
+import { useRequest } from "../../hooks/useRequest";
 import { ROUTES } from "@/constants/routes";
 import { useAuth } from "@/hooks/useAuth";
 
 export const PymeApplications: React.FC = () => {
-  const { total, approved, pending, rejected } = useRequestStats();
+  const { total, approved, pending, rejected } = useRequest().stats;
   const navigate = useNavigate();
 
   const { isFullyRegistered } = useAuth();
