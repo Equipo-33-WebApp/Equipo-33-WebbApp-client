@@ -1,6 +1,11 @@
 export interface RequestData {
     id: string
     amount: number
+    termInMonths: number
+    annualIncome: number
+    netIncome: number
+    creditDestination: string
+    riskLevel: string
     purpose: string
     status: string
     updatedAt: string

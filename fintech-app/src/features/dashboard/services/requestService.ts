@@ -5,7 +5,7 @@ import type { RequestData } from "@/types";
 
 export const fetchRequests = async () => {
   const token = getToken()
-  const res = await fetch(`${API_URL}/panel`, {
+  const res = await fetch(`${API_URL}/operatorPanel`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
