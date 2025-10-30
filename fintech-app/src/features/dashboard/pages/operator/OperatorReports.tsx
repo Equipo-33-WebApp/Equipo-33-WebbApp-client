@@ -3,8 +3,10 @@ import { KpiCard } from "../../components/operator/KpiCard";
 import { PieChartCard } from "../../components/operator/PieChartCard";
 import { LineChartCard } from "../../components/operator/LineChartCard";
 import { useRequest } from "../../hooks/useRequest";
+import { STATUS_APPROVED, STATUS_PENDING, STATUS_REJECTED } from "@/constants/requestStatus";
 
 export const OperatorReports: React.FC = () => {
+  const { requests } = useRequest();
   const { total, approved, pending, rejected } = useRequest().stats;
 
   const distributionData = [
@@ -13,16 +15,31 @@ export const OperatorReports: React.FC = () => {
     { name: "Rechazadas", value: rejected, color: "#ef4444" },
   ];
 
+  // Cannot calculate avgApprovalTime without createdAt field.
   const avgApprovalTime = "3.2 días";
-  const rejectionRate = ((rejected / total) * 100).toFixed(1) + "%";
-  const approvalRate = ((approved / total) * 100).toFixed(1) + "%";
 
-  const monthlyData = [
-    { month: "Jun", approved: 12, rejected: 3, pending: 5 },
-    { month: "Jul", approved: 18, rejected: 2, pending: 4 },
-    { month: "Ago", approved: 15, rejected: 5, pending: 6 },
-    { month: "Sep", approved: 20, rejected: 3, pending: 3 },
-  ];
+  const rejectionRate = total > 0 ? ((rejected / total) * 100).toFixed(1) + "%" : "0%";
+  const approvalRate = total > 0 ? ((approved / total) * 100).toFixed(1) + "%" : "0%";
+
+  const getMonthlyData = () => {
+    const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+    const monthlyMap: { [key: string]: { month: string; approved: number; rejected: number; pending: number } } = {};
+
+    requests.forEach(req => {
+      const monthIndex = new Date(req.updatedAt).getMonth();
+      const month = monthNames[monthIndex];
+      if (!monthlyMap[month]) {
+        monthlyMap[month] = { month, approved: 0, rejected: 0, pending: 0 };
+      }
+      if (req.status === STATUS_APPROVED) monthlyMap[month].approved++;
+      if (req.status === STATUS_REJECTED) monthlyMap[month].rejected++;
+      if (req.status === STATUS_PENDING) monthlyMap[month].pending++;
+    });
+
+    return Object.values(monthlyMap);
+  };
+
+  const monthlyData = getMonthlyData();
 
   return (
     <section className="space-y-8 animate-fade-right">
