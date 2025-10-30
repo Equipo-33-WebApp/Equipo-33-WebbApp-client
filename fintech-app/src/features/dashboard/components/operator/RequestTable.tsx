@@ -1,6 +1,7 @@
 import React from "react";
 import { STATUS_APPROVED, STATUS_PENDING } from "@/constants/requestStatus";
 import type { RequestData } from "@/types";
+import { useNavigate } from "react-router-dom";
 
 interface RequestTableProps {
   requests: RequestData[];
@@ -13,6 +14,8 @@ export const RequestTable: React.FC<RequestTableProps> = ({ requests }) => {
     if (a.status !== STATUS_PENDING && b.status === STATUS_PENDING) return 1;
     return 0;
   });
+
+  const navigate = useNavigate();
 
 
   return (
@@ -45,7 +48,10 @@ export const RequestTable: React.FC<RequestTableProps> = ({ requests }) => {
                 {new Date(req.date).toLocaleDateString()}
               </td>
               <td className="px-4 py-2 text-right">
-                <button className="text-blue-600 hover:underline font-medium">
+                <button 
+                  onClick={() => navigate("/test/opreq")}  
+                  className="text-blue-600 hover:underline font-medium"
+                >
                   Ver detalle
                 </button>
               </td>

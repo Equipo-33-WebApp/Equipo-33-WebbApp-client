@@ -7,7 +7,6 @@ import { useAuth } from "@/hooks/useAuth";
 import {
   PymeHome,
   PymeApplications,
-  PymeRequest,
   PymeAccount
 } from "@/features/dashboard/pages";
 import {
@@ -17,6 +16,8 @@ import {
   OperatorAccount
 } from "@/features/dashboard/pages";
 import { ROUTES } from "@/constants/routes";
+import { RequestLayout } from "@/layouts/RequestLayout";
+import { RequestProvider } from "@/features/credit-request/context/RequestProvider";
 
 
 
@@ -43,7 +44,14 @@ export const DashboardRoutes = () => {
                 <Route index element={<Navigate to="overview" replace />} />
                 <Route path="overview" element={<PymeHome />} />
                 <Route path="applications" element={<PymeApplications />} />
-                <Route path="request" element={<PymeRequest />} />
+                <Route 
+                  path="request" 
+                  element={
+                    <RequestProvider>
+                      <RequestLayout />
+                    </RequestProvider>
+                  } 
+                />
                 <Route path="account" element={<PymeAccount />} />
               </Routes>
             </PrivateRoute>

@@ -108,7 +108,7 @@ export default function RegisterStep2({ onFinish }: RegisterStep2Props) {
           onChange={(e) => handleChange("address", e.target.value)}
           className="w-full rounded-xl p-3 bg-white/10 text-white placeholder-gray-400 border border-gray-500 focus:ring-2 focus:ring-[var(--color-primary)] outline-none"
           placeholder="Av. Principal 123, Ciudad"
-          required
+          required autoComplete="off"
         />
         {fieldErrors.address && (
           <p className="text-red-400 text-sm mt-1">{fieldErrors.address}</p>
@@ -166,7 +166,7 @@ export default function RegisterStep2({ onFinish }: RegisterStep2Props) {
           onChange={(e) => handleChange("phone", e.target.value)}
           className="w-full rounded-xl p-3 bg-white/10 text-white placeholder-gray-400 border border-gray-500 focus:ring-2 focus:ring-[var(--color-primary)] outline-none"
           placeholder="+54 11 5555-5555"
-          required
+          required autoComplete="off"
         />
         {fieldErrors.phone && (
           <p className="text-red-400 text-sm mt-1">{fieldErrors.phone}</p>
