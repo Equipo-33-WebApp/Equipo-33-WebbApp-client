@@ -1,15 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 
 import { UserCard } from "../../components/UserCard";
 import { PendingRequestsCard } from "../../components/operator/PendingRequestsCard";
 import { HomeStatsCard } from "../../components/HomeStatsCard";
 import { useRequest } from "../../hooks/useRequest";
-
+import { RequestDetailModal } from "../../components/operator/RequestDetailModal";
+import type { RequestData } from "@/types";
 
 export const OperatorHome: React.FC = () => {
   const { user } = useAuth();
-  const { stats } = useRequest();
+  const { stats, reloadRequests } = useRequest();
+  const [selectedRequest, setSelectedRequest] = useState<RequestData | null>(null);
+
+  const handleOpenModal = (request: RequestData) => {
+    setSelectedRequest(request);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedRequest(null);
+  };
+
+  const handleRequestUpdate = () => {
+    reloadRequests();
+  };
 
   return (
     <section className="space-y-6 animate-fade-right">
@@ -20,7 +34,7 @@ export const OperatorHome: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 flex flex-col gap-6">
           <HomeStatsCard statsData={stats} />
-          <PendingRequestsCard />
+          <PendingRequestsCard onOpenModal={handleOpenModal} />
         </div>
 
         <div className="flex flex-col gap-6">
@@ -31,6 +45,13 @@ export const OperatorHome: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <RequestDetailModal 
+        isOpen={!!selectedRequest}
+        onClose={handleCloseModal}
+        request={selectedRequest}
+        onRequestUpdate={handleRequestUpdate}
+      />
     </section>
   );
 };

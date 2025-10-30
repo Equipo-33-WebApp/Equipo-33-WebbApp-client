@@ -4,8 +4,14 @@ import { STATUS_PENDING } from "@/constants/requestStatus";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
 import { useRequest } from "../../hooks/useRequest";
+import type { RequestData } from "@/types";
+import { formatDate } from "@/utils/date";
 
-export const PendingRequestsCard: React.FC = () => {
+interface PendingRequestsCardProps {
+    onOpenModal: (request: RequestData) => void;
+}
+
+export const PendingRequestsCard: React.FC<PendingRequestsCardProps> = ({ onOpenModal }) => {
   const navigate = useNavigate();
   const { requests } = useRequest();
   const pendingRequests = requests.filter(r => r.status === STATUS_PENDING).slice(0, 4);
@@ -22,12 +28,12 @@ export const PendingRequestsCard: React.FC = () => {
             <div
               key={req.id}
               className="p-3 bg-gray-50 rounded-lg flex flex-col sm:flex-row justify-between items-center hover:bg-blue-50 cursor-pointer transition"
-            //   onClick={() => navigate(`/dashboard/op/requests/${req.id}`)}
+              onClick={() => onOpenModal(req)}
             >
               <div>
                 <p className="text-gray-800 font-medium">{req.companyName}</p>
                 <p className="text-sm text-gray-500">
-                  Solicitado: {new Date(req.updatedAt).toLocaleDateString()}
+                  Solicitado: {formatDate(req.updatedAt)}
                 </p>
               </div>
               <span className="text-xs bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full font-semibold">

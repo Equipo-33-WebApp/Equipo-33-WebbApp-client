@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import { Card } from '@/components/ui/Card';
 import type { RequestData } from '@/types';
 import { useRequestUpdate } from '../../hooks/useRequestUpdate';
+import { formatDate } from "@/utils/date";
+
 // Constants for request status
 const REQUEST_STATUS = {
   PENDING: 'Pending',
@@ -202,7 +204,7 @@ export const RequestDetailModal: React.FC<RequestDetailModalProps> = ({
               <div className="flex justify-between">
                 <span className="font-medium text-gray-600">Fecha de Solicitud:</span>
                 <span className="text-gray-900">
-                  {request.updatedAt ? new Date(request.updatedAt).toLocaleDateString() : 'No especificado'}
+                  {request.updatedAt ? formatDate(request.updatedAt) : 'No especificado'}
                 </span>
               </div>
             </div>

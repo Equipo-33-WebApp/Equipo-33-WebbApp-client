@@ -9,6 +9,7 @@ import { RequestDetailModal } from './RequestDetailModal';
 import type { RequestData } from "@/types";
 import { Pagination } from './Pagination';
 import { SortableHeader } from './SortableHeader';
+import { formatDate } from "@/utils/date";
 
 interface RequestTableProps {
   requests: RequestData[];
@@ -147,13 +148,13 @@ export const RequestTable: React.FC<RequestTableProps> = ({ requests, onRequests
                   {req.companyName}
                 </td>
                 <td className="px-4 py-2">
-                  <span className={`px-2 inline-flex text-xs text-center leading-5 font-semibold rounded-full ${statusDisplay[req.status]?.color || 'bg-gray-100 text-gray-800'}`}>
+                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusDisplay[req.status]?.color || 'bg-gray-100 text-gray-800'}`}>
                     {statusDisplay[req.status]?.label || 'Desconocido'}
                   </span>
                 </td>
                 <td className="px-4 py-2 hidden sm:table-cell">${req.amount.toLocaleString()}</td>
                 <td className="px-4 py-2 hidden md:table-cell">
-                  {new Date(req.updatedAt).toLocaleDateString()}
+                  {formatDate(req.updatedAt)}
                 </td>
                 <td className="px-4 py-2 text-right">
                   <button 
