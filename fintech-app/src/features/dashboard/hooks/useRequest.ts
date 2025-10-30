@@ -2,8 +2,11 @@ import { useState, useEffect } from "react";
 import { fetchRequests, calculateStats } from "../services/requestService";
 import type { DashboardRequestSummaryData } from "../types";
 import type { RequestData } from "@/types";
+import { useAuth } from "@/hooks/useAuth";
+import { ROLE_OPERATOR } from "@/constants/roles";
 
 export const useRequest = () => {
+  const { user } = useAuth();
   const [stats, setStats] = useState<DashboardRequestSummaryData>(
     { total: 0, approved: 0, pending: 0, onReview: 0, rejected: 0 }
   );
@@ -12,6 +15,10 @@ export const useRequest = () => {
   const [error, setError] = useState<Error | null>(null);
 
   const loadData = async (status?: string) => {
+    if (user?.role !== ROLE_OPERATOR) {
+      setRequests([]);
+      return;
+    }
     try {
       setIsLoading(true);
       setError(null);
@@ -27,8 +34,11 @@ export const useRequest = () => {
   };
 
   useEffect(() => {
-    loadData();
-  }, []);
+    if (user?.role === ROLE_OPERATOR) {
+      loadData();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   return { stats, requests, isLoading, error, reloadRequests: loadData };
 };
