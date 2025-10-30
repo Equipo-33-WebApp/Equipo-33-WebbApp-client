@@ -2,12 +2,13 @@ import React from "react";
 
 import { STATUS_PENDING } from "@/constants/requestStatus";
 import { useNavigate } from "react-router-dom";
-import { requestsMock } from "../../mocks/requestsMock";
 import { ROUTES } from "@/constants/routes";
+import { useRequest } from "../../hooks/useRequest";
 
 export const PendingRequestsCard: React.FC = () => {
   const navigate = useNavigate();
-  const pendingRequests = requestsMock.filter(r => r.status === STATUS_PENDING).slice(0, 4);
+  const { requests } = useRequest();
+  const pendingRequests = requests.filter(r => r.status === STATUS_PENDING).slice(0, 4);
 
   return (
     <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6">
@@ -24,9 +25,9 @@ export const PendingRequestsCard: React.FC = () => {
             //   onClick={() => navigate(`/dashboard/op/requests/${req.id}`)}
             >
               <div>
-                <p className="text-gray-800 font-medium">{req.business}</p>
+                <p className="text-gray-800 font-medium">{req.companyName}</p>
                 <p className="text-sm text-gray-500">
-                  Solicitado: {new Date(req.date).toLocaleDateString()}
+                  Solicitado: {new Date(req.updatedAt).toLocaleDateString()}
                 </p>
               </div>
               <span className="text-xs bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full font-semibold">
