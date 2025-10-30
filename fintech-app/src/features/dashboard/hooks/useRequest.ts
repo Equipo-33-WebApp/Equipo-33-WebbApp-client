@@ -22,10 +22,20 @@ export const useRequest = () => {
     try {
       setIsLoading(true);
       setError(null);
-      const requests = await fetchRequests(status);
-      const filteredRequests = requests.filter((r: { status: string; }) => r.status !== 'Draft');
+      let allRequests: RequestData[] = [];
+      let page = 1;
+      const limit = 10;
+      while (true) {
+        const requests = await fetchRequests(status, page, limit);
+        if (requests.length === 0) {
+          break;
+        }
+        allRequests = [...allRequests, ...requests];
+        page++;
+      }
+      const filteredRequests = allRequests.filter((r: { status: string; }) => r.status !== 'Draft');
       setRequests(filteredRequests);
-      setStats(calculateStats(requests));
+      setStats(calculateStats(allRequests));
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Error al cargar las solicitudes'));
     } finally {

@@ -15,3 +15,7 @@ export { CircleIcon } from "./CircleIcon"
 export { CheckCircledIcon } from "./CheckCircledIcon"
 export { UploadIcon } from "./UploadIcon"
 export { CameraIcon } from "./CameraIcon"
+export { ChevronLeftIcon } from "./ChevronLeftIcon";
+export { ChevronRightIcon } from "./ChevronRightIcon";
+export { ChevronsLeftIcon } from "./ChevronsLeftIcon";
+export { ChevronsRightIcon } from "./ChevronsRightIcon";

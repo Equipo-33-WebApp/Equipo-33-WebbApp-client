@@ -3,11 +3,17 @@ import { API_URL } from "@/constants/api";
 import { getToken } from "@/utils/getToken";
 import type { RequestData } from "@/types";
 
-export const fetchRequests = async (status?: string) => {
+export const fetchRequests = async (status?: string, page?: number, limit?: number) => {
   const token = getToken()
   const url = new URL(`${API_URL}/operatorPanel`);
   if (status) {
     url.searchParams.append('status', status);
+  }
+  if (page) {
+    url.searchParams.append('page', String(page));
+  }
+  if (limit) {
+    url.searchParams.append('pageSize', String(limit));
   }
   const res = await fetch(url.toString(), {
     method: "GET",

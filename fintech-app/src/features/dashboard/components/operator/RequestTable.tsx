@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { 
-  STATUS_APPROVED, 
-  STATUS_PENDING, 
-  STATUS_ONREVIEW, 
-  STATUS_REJECTED 
+import {
+  STATUS_APPROVED,
+  STATUS_PENDING,
+  STATUS_ONREVIEW,
+  STATUS_REJECTED
 } from "@/constants/requestStatus";
 import { RequestDetailModal } from './RequestDetailModal';
 import type { RequestData } from "@/types";
+import { Pagination } from './Pagination';
 
 interface RequestTableProps {
   requests: RequestData[];
@@ -25,6 +26,8 @@ export const RequestTable: React.FC<RequestTableProps> = ({ requests, onRequests
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<RequestData | null>(null);
   const [selectedStatus, setSelectedStatus] = useState<string>(currentFilter || "");
+  const [currentPage, setCurrentPage] = useState(1);
+  const requestsPerPage = 10;
 
   const statusOptions = [
     { value: "", label: "Todos" },
@@ -38,6 +41,7 @@ export const RequestTable: React.FC<RequestTableProps> = ({ requests, onRequests
     const newStatus = event.target.value;
     setSelectedStatus(newStatus);
     onRequestsUpdate(newStatus || undefined);
+    setCurrentPage(1);
   };
 
   const handleOpenModal = (request: RequestData) => {
@@ -63,8 +67,13 @@ export const RequestTable: React.FC<RequestTableProps> = ({ requests, onRequests
     return aOrder - bOrder;
   });
 
+  const indexOfLastRequest = currentPage * requestsPerPage;
+  const indexOfFirstRequest = indexOfLastRequest - requestsPerPage;
+  const currentRequests = requestsData.slice(indexOfFirstRequest, indexOfLastRequest);
+  const totalPages = Math.ceil(requestsData.length / requestsPerPage);
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 p-2">
       <div className="flex justify-end">
         <select
           value={selectedStatus}
@@ -91,7 +100,7 @@ export const RequestTable: React.FC<RequestTableProps> = ({ requests, onRequests
             </tr>
           </thead>
           <tbody>
-            {requestsData.map((req) => (
+            {currentRequests.map((req) => (
               <tr key={req.id} className="border-t hover:bg-gray-50 transition">
                 <td className="px-4 py-2 font-medium text-gray-900">
                   {req.companyName}
@@ -117,6 +126,18 @@ export const RequestTable: React.FC<RequestTableProps> = ({ requests, onRequests
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="flex justify-between items-center mt-4 p-2">
+        <span className="text-sm text-gray-700">
+          Mostrando {requestsData.length > 0 ? indexOfFirstRequest + 1 : 0} a {Math.min(indexOfLastRequest, requestsData.length)} de {requestsData.length} solicitudes
+        </span>
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        )}
       </div>
       <RequestDetailModal 
         isOpen={isModalOpen} 
