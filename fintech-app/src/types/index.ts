@@ -13,3 +13,8 @@ export interface RequestData {
     companyName: string
     sector: string
 }
+
+export interface LoadingMsgState {
+  active: boolean
+  message?: string
+}

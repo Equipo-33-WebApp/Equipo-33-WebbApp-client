@@ -7,7 +7,7 @@ export const uploadKyc = async (data: KycValidationData, token: string): Promise
   if (data.idDocumentFront) formData.append("idDocumentFront", data.idDocumentFront);
   if (data.faceSelfie) formData.append("faceSelfie", data.faceSelfie);
 
-  const res = await fetch(`${API_URL}/KycVerification/verify_identity`, {
+  const res = await fetch(`${API_URL}/kycverification/verify_identity`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,

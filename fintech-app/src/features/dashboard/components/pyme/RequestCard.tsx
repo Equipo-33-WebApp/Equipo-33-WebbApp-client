@@ -2,11 +2,11 @@ import { STATUS_APPROVED, STATUS_PENDING, STATUS_REJECTED } from "@/constants/re
 import React from "react";
 
 interface RequestCardProps {
-  id: string;
-  business: string;
-  amount: number;
-  date: string;
-  status: string;
+  id: string
+  business: string
+  amount: number
+  date: string
+  status: string
 }
 
 export const RequestCard: React.FC<RequestCardProps> = ({
@@ -41,7 +41,13 @@ export const RequestCard: React.FC<RequestCardProps> = ({
       <p className="text-gray-700 font-medium mt-2">
         Monto: ${amount.toLocaleString()}
       </p>
-      <p className="text-sm text-gray-500">Fecha: {date}</p>
+      <p className="text-sm text-gray-500">
+        Fecha: {new Date(date).toLocaleDateString("es-AR", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        })}
+      </p>
     </div>
   );
 };

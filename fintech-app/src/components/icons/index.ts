@@ -21,3 +21,4 @@ export { ChevronsLeftIcon } from "./ChevronsLeftIcon";
 export { ChevronsRightIcon } from "./ChevronsRightIcon";
 export { ArrowUpIcon } from "./ArrowUpIcon";
 export { ArrowDownIcon } from "./ArrowDownIcon";
+export { DotFilledIcon } from "./DotFilledIcon"
