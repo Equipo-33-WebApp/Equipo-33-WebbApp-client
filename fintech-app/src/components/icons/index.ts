@@ -19,3 +19,5 @@ export { ChevronLeftIcon } from "./ChevronLeftIcon";
 export { ChevronRightIcon } from "./ChevronRightIcon";
 export { ChevronsLeftIcon } from "./ChevronsLeftIcon";
 export { ChevronsRightIcon } from "./ChevronsRightIcon";
+export { ArrowUpIcon } from "./ArrowUpIcon";
+export { ArrowDownIcon } from "./ArrowDownIcon";

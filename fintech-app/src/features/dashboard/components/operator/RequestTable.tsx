@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   STATUS_APPROVED,
   STATUS_PENDING,
@@ -8,6 +8,7 @@ import {
 import { RequestDetailModal } from './RequestDetailModal';
 import type { RequestData } from "@/types";
 import { Pagination } from './Pagination';
+import { SortableHeader } from './SortableHeader';
 
 interface RequestTableProps {
   requests: RequestData[];
@@ -22,12 +23,39 @@ const statusDisplay: Record<string, { label: string; color: string }> = {
   [STATUS_REJECTED]: { label: 'Rechazado', color: 'bg-red-100 text-red-800' },
 };
 
+type SortColumn = keyof RequestData | '';
+
 export const RequestTable: React.FC<RequestTableProps> = ({ requests, onRequestsUpdate, currentFilter }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<RequestData | null>(null);
   const [selectedStatus, setSelectedStatus] = useState<string>(currentFilter || "");
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortColumn, setSortColumn] = useState<SortColumn>('companyName');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const requestsPerPage = 10;
+
+  const handleSort = (column: SortColumn) => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortColumn(column);
+      setSortDirection('asc');
+    }
+    setCurrentPage(1);
+  };
+
+  const sortedRequests = useMemo(() => {
+    if (!sortColumn) return requests;
+
+    return [...requests].sort((a, b) => {
+      const aValue = a[sortColumn];
+      const bValue = b[sortColumn];
+
+      if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }, [requests, sortColumn, sortDirection]);
 
   const statusOptions = [
     { value: "", label: "Todos" },
@@ -54,23 +82,10 @@ export const RequestTable: React.FC<RequestTableProps> = ({ requests, onRequests
     setSelectedRequest(null);
   };
 
-  const statusOrder: Record<string, number> = {
-    [STATUS_PENDING]: 1,
-    [STATUS_ONREVIEW]: 2,
-    [STATUS_REJECTED]: 3,
-    [STATUS_APPROVED]: 4,
-  };
-
-  const requestsData = [...requests].sort((a, b) => {
-    const aOrder = statusOrder[a.status] ?? 5;
-    const bOrder = statusOrder[b.status] ?? 5;
-    return aOrder - bOrder;
-  });
-
   const indexOfLastRequest = currentPage * requestsPerPage;
   const indexOfFirstRequest = indexOfLastRequest - requestsPerPage;
-  const currentRequests = requestsData.slice(indexOfFirstRequest, indexOfLastRequest);
-  const totalPages = Math.ceil(requestsData.length / requestsPerPage);
+  const currentRequests = sortedRequests.slice(indexOfFirstRequest, indexOfLastRequest);
+  const totalPages = Math.ceil(sortedRequests.length / requestsPerPage);
 
   return (
     <div className="space-y-4 p-2">
@@ -92,10 +107,36 @@ export const RequestTable: React.FC<RequestTableProps> = ({ requests, onRequests
         <table className="w-full text-sm text-left text-gray-700">
           <thead className="bg-gray-50 text-gray-600 uppercase text-xs">
             <tr>
-              <th className="px-4 py-2">Empresa</th>
-              <th className="px-4 py-2">Estatus</th>
-              <th className="px-4 py-2 hidden sm:table-cell">Monto</th>
-              <th className="px-4 py-2 hidden md:table-cell">Fecha</th>
+              <SortableHeader
+                column="companyName"
+                label="Empresa"
+                sortColumn={sortColumn}
+                sortDirection={sortDirection}
+                onSort={handleSort as (column: string) => void}
+              />
+              <SortableHeader
+                column="status"
+                label="Estatus"
+                sortColumn={sortColumn}
+                sortDirection={sortDirection}
+                onSort={handleSort as (column: string) => void}
+              />
+              <SortableHeader
+                column="amount"
+                label="Monto"
+                sortColumn={sortColumn}
+                sortDirection={sortDirection}
+                onSort={handleSort as (column: string) => void}
+                className="hidden sm:table-cell"
+              />
+              <SortableHeader
+                column="updatedAt"
+                label="Fecha"
+                sortColumn={sortColumn}
+                sortDirection={sortDirection}
+                onSort={handleSort as (column: string) => void}
+                className="hidden md:table-cell"
+              />
               <th className="px-4 py-2 text-right">Acciones</th>
             </tr>
           </thead>
@@ -127,9 +168,9 @@ export const RequestTable: React.FC<RequestTableProps> = ({ requests, onRequests
           </tbody>
         </table>
       </div>
-      <div className="flex justify-between items-center mt-4 p-2">
+      <div className="flex justify-between items-center mt-4">
         <span className="text-sm text-gray-700">
-          Mostrando {requestsData.length > 0 ? indexOfFirstRequest + 1 : 0} a {Math.min(indexOfLastRequest, requestsData.length)} de {requestsData.length} solicitudes
+          Mostrando {sortedRequests.length > 0 ? indexOfFirstRequest + 1 : 0} a {Math.min(indexOfLastRequest, sortedRequests.length)} de {sortedRequests.length} solicitudes
         </span>
         {totalPages > 1 && (
           <Pagination
