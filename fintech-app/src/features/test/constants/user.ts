@@ -6,6 +6,7 @@ export const userMock: User = {
   role: "PYME",
   createdAt: "2025-10-29T10:00:00Z",
   pymeData: {
+    pymeId: "1a23df",
     companyName: "Gastromy SRL",
     address: "Av. Corrientes 3265, Local 8, Balvanera, Ciudad de Buenos Aires",
     employees: 18,
@@ -23,6 +24,7 @@ export const userOpMock: User = {
   role: "OPERATOR",
   createdAt: "2025-10-29T10:00:00Z",
   pymeData: {
+    pymeId: "1a23df",
     companyName: "Gastromy SRL",
     address: "Av. Corrientes 3265, Local 8, Balvanera, Ciudad de Buenos Aires",
     employees: 18,

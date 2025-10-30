@@ -8,19 +8,19 @@ import {
   LogoutIcon,
   DashboardIcon,
   ClipboardIcon,
-  PencilIcon,
+  // PencilIcon,
   HomeIcon,
   PieChartIcon
 } from "@/components/icons";
 import { Button } from "@/components/ui/Button";
 import { ROUTES } from "@/constants/routes";
 
-const pymeMenu: DashboardMenuItem[] = [
-  { id: "pyme-home", label: "Resumen", to: ROUTES.DASHBOARD.PYME.OVERVIEW, icon: DashboardIcon },
-  { id: "pyme-applications", label: "Mis Solicitudes", to: ROUTES.DASHBOARD.PYME.APPLICATIONS, icon: ClipboardIcon },
-  { id: "request", label: "Solicitar Crédito", to: ROUTES.DASHBOARD.PYME.REQUEST, icon: PencilIcon },
-  { id: "py-account", label: "Mi Cuenta", to: ROUTES.DASHBOARD.PYME.ACCOUNT, icon: UserIcon },
-];
+// const pymeMenu: DashboardMenuItem[] = [
+//   { id: "pyme-home", label: "Resumen", to: ROUTES.DASHBOARD.PYME.OVERVIEW, icon: DashboardIcon },
+//   { id: "pyme-applications", label: "Mis Solicitudes", to: ROUTES.DASHBOARD.PYME.APPLICATIONS, icon: ClipboardIcon },
+//   { id: "request", label: "Solicitar Crédito", to: ROUTES.DASHBOARD.PYME.REQUEST, icon: PencilIcon },
+//   { id: "py-account", label: "Mi Cuenta", to: ROUTES.DASHBOARD.PYME.ACCOUNT, icon: UserIcon },
+// ];
 
 const operatorMenu: DashboardMenuItem[] = [
   { id: "operator-home", label: "Resumen", to: ROUTES.DASHBOARD.OPERATOR.OVERVIEW, icon: DashboardIcon },
