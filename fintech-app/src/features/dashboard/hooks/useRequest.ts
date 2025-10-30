@@ -8,15 +8,27 @@ export const useRequest = () => {
     { total: 0, approved: 0, pending: 0, onReview: 0, rejected: 0 }
   );
   const [requests, setRequests] = useState<RequestData[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const loadData = async (status?: string) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const requests = await fetchRequests(status);
+      const filteredRequests = requests.filter((r: { status: string; }) => r.status !== 'Draft');
+      setRequests(filteredRequests);
+      setStats(calculateStats(requests));
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error('Error al cargar las solicitudes'));
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const loadData = async () => {
-      const requests = await fetchRequests();
-      setRequests(requests.filter((r: { status: string; }) => r.status !== 'Draft'));
-      setStats(calculateStats(requests));
-    };
     loadData();
   }, []);
 
-  return { stats, requests };
+  return { stats, requests, isLoading, error, reloadRequests: loadData };
 };

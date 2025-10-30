@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { STATUS_PENDING } from "@/constants/requestStatus";
 import { SummaryCard } from "../../components/SummaryCard";
 import { RequestTable } from "../../components/operator/RequestTable";
@@ -6,8 +6,14 @@ import { StatesLegend } from "../../components/StatesLegend";
 import { useRequest } from "../../hooks/useRequest";
 
 export const OperatorReview: React.FC = () => {
-  const { requests } = useRequest();
+  const { requests, reloadRequests, isLoading } = useRequest();
+  const [currentFilter, setCurrentFilter] = useState<string | undefined>(undefined);
   const pending = requests.filter(r => r.status === STATUS_PENDING).length;
+
+  const handleRequestsUpdate = (status?: string) => {
+    setCurrentFilter(status);
+    reloadRequests(status);
+  };
 
   return (
     <section className="space-y-8 animate-fade-right">
@@ -26,8 +32,18 @@ export const OperatorReview: React.FC = () => {
         <SummaryCard label="Pendientes" value={pending} color="bg-yellow-50 text-yellow-700" />
       </div>
 
+      {isLoading && (
+        <div className="text-center py-4 text-gray-500">
+          Cargando solicitudes...
+        </div>
+      )}
+
       <div className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-x-auto">
-        <RequestTable requests={requests} />
+        <RequestTable 
+          requests={requests} 
+          onRequestsUpdate={handleRequestsUpdate}
+          currentFilter={currentFilter}
+        />
       </div>
     </section>
   );

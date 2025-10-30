@@ -3,9 +3,13 @@ import { API_URL } from "@/constants/api";
 import { getToken } from "@/utils/getToken";
 import type { RequestData } from "@/types";
 
-export const fetchRequests = async () => {
+export const fetchRequests = async (status?: string) => {
   const token = getToken()
-  const res = await fetch(`${API_URL}/operatorPanel`, {
+  const url = new URL(`${API_URL}/operatorPanel`);
+  if (status) {
+    url.searchParams.append('status', status);
+  }
+  const res = await fetch(url.toString(), {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -14,6 +18,24 @@ export const fetchRequests = async () => {
   });
   const resquests = await res.json();
   return resquests.data;
+};
+
+export const updateRequestStatus = async (id: string, status: string) => {
+  const token = getToken()
+  const res = await fetch(`${API_URL}/operatorpanel/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify({ status: status })
+  });
+
+  if (!res.ok)  {
+  throw new Error(`Error al actualizar la solicitud (${res.status})`);
+}
+
+  return res.json();
 };
 
 export const calculateStats = (requests: RequestData[]) => {
