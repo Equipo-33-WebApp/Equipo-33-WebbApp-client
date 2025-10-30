@@ -69,6 +69,7 @@ const normalizePyme = (newPyme: any): PymeUserData => {
     sector: newPyme.sector,
     employees: newPyme.employees,
     phone: newPyme.phone,
-    hasKycValidated: newPyme.hasKycValidated
+    hasKycValidated: newPyme.hasKycValidated,
+    pymeId: newPyme.id
   }
 }

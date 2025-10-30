@@ -1,8 +1,13 @@
 export interface RequestData {
-    id: string
-    business: string
-    amount: number
-    date: string
-    status: string
-    flaggedKyc?: boolean
+  id: string
+  business: string
+  amount: number
+  date: string
+  status: string
+  flaggedKyc?: boolean
+}
+
+export interface LoadingMsgState {
+  active: boolean
+  message?: string
 }
