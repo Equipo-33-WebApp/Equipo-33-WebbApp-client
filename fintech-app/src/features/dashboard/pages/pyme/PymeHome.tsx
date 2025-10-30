@@ -6,6 +6,7 @@ import { HomeStatsCard } from "../../components/HomeStatsCard";
 import { useRequest } from "../../hooks/useRequest";
 import { ROUTES } from "@/constants/routes";
 import { CheckCircledIcon, CircleIcon } from "@/components/icons";
+import { PymeRecentRequestsCard } from "../../components/pyme/PymeRecentRequestsCard";
 
 
 export const PymeHome: React.FC = () => {
@@ -20,8 +21,9 @@ export const PymeHome: React.FC = () => {
       </h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 flex flex-col gap-6">
           <HomeStatsCard statsData={stats} />
+          {isFullyRegistered && <PymeRecentRequestsCard />} 
         </div>
 
         <div className="flex flex-col gap-6">

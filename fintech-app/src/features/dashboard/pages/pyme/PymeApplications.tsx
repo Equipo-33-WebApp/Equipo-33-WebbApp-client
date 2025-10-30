@@ -1,17 +1,17 @@
 import React from "react";
 import { RequestCard } from "@/features/dashboard/components/pyme/RequestCard";
-import { requestsMock } from "@/features/dashboard/mocks/requestsMock";
 import { Navigate, useNavigate } from "react-router-dom";
 import { SummaryCard } from "../../components/SummaryCard";
 import { useRequest } from "../../hooks/useRequest";
 import { ROUTES } from "@/constants/routes";
 import { useAuth } from "@/hooks/useAuth";
+import { usePymeRequests } from "../../hooks/usePymeRequests"; // Import the new hook
 
 export const PymeApplications: React.FC = () => {
   const { total, approved, pending, rejected } = useRequest().stats;
   const navigate = useNavigate();
-
   const { isFullyRegistered } = useAuth();
+  const { requests, isLoading, error } = usePymeRequests(); // Use the new hook
 
   if (!isFullyRegistered) return <Navigate to={ROUTES.DASHBOARD.BASE} replace />
 
@@ -42,16 +42,20 @@ export const PymeApplications: React.FC = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
         {summaryInfo.map(({ label, value, color }) => (
-          <SummaryCard label={label} value={value} color={color} />
+          <SummaryCard key={label} label={label} value={value} color={color} />
         ))}
       </div>
 
       <div className="space-y-4">
         <h2 className="text-lg font-semibold text-gray-800">Historial reciente</h2>
-        {requestsMock.length > 0 ? (
+        {isLoading ? (
+          <p className="text-gray-500 italic">Cargando solicitudes...</p>
+        ) : error ? (
+          <p className="text-red-500 italic">Error al cargar las solicitudes.</p>
+        ) : requests.length > 0 ? (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {requestsMock.map(req => (
-              <RequestCard key={req.id} {...req} />
+            {requests.map(req => (
+              <RequestCard business={req.companyName} date={req.updatedAt} key={req.id} {...req} />
             ))}
           </div>
         ) : (
