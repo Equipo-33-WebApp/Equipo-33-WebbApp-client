@@ -44,3 +44,8 @@ export interface AmlCheck {
   requiresManualReview: boolean;
   createdAt: string;
 }
+
+export interface LoadingMsgState {
+  active: boolean
+  message?: string
+}
