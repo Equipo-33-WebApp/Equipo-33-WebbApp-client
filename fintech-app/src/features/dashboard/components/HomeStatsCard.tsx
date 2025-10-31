@@ -14,6 +14,7 @@ export const HomeStatsCard: React.FC<HomeStatsCardProps> = ({ statsData }) => {
     { label: "Totales", value: statsData.total },
     { label: "Aprobadas", value: statsData.approved },
     { label: "Pendientes", value: statsData.pending },
+    { label: "En revisión", value: statsData.onReview },
     { label: "Rechazadas", value: statsData.rejected },
   ];
 
