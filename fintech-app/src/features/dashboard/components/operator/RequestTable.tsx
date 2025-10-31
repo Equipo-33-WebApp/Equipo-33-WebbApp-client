@@ -52,9 +52,17 @@ export const RequestTable: React.FC<RequestTableProps> = ({ requests, onRequests
       const aValue = a[sortColumn];
       const bValue = b[sortColumn];
 
-      if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
-      if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
-      return 0;
+      let comparison = 0;
+
+      if (aValue == null || bValue == null) {
+        comparison = aValue == null && bValue != null ? -1 : (aValue != null && bValue == null ? 1 : 0);
+      } else if (typeof aValue === 'number' && typeof bValue === 'number') {
+        comparison = aValue - bValue;
+      } else {
+        comparison = String(aValue).localeCompare(String(bValue));
+      }
+
+      return sortDirection === 'asc' ? comparison : -comparison;
     });
   }, [requests, sortColumn, sortDirection]);
 
@@ -128,7 +136,7 @@ export const RequestTable: React.FC<RequestTableProps> = ({ requests, onRequests
                 sortColumn={sortColumn}
                 sortDirection={sortDirection}
                 onSort={handleSort as (column: string) => void}
-                className="hidden sm:table-cell"
+                className="hidden sm:table-cell text-center px-4"
               />
               <SortableHeader
                 column="updatedAt"
@@ -152,7 +160,7 @@ export const RequestTable: React.FC<RequestTableProps> = ({ requests, onRequests
                     {statusDisplay[req.status]?.label || 'Desconocido'}
                   </span>
                 </td>
-                <td className="px-4 py-2 hidden sm:table-cell">${req.amount.toLocaleString()}</td>
+                <td className="py-2 hidden sm:table-cell text-right pr-6 pl-4">${req.amount.toLocaleString()}</td>
                 <td className="px-4 py-2 hidden md:table-cell">
                   {formatDate(req.updatedAt)}
                 </td>
@@ -185,7 +193,7 @@ export const RequestTable: React.FC<RequestTableProps> = ({ requests, onRequests
         isOpen={isModalOpen} 
         onClose={handleCloseModal} 
         request={selectedRequest}
-        onRequestUpdate={() => onRequestsUpdate(currentFilter)}
+        onUpdate={() => onRequestsUpdate(currentFilter)}
       />
     </div>
   );

@@ -1,53 +1,51 @@
-import { STATUS_APPROVED, STATUS_PENDING, STATUS_REJECTED } from "@/constants/requestStatus";
 import React from "react";
+import {
+  STATUS_APPROVED,
+  STATUS_PENDING,
+  STATUS_ONREVIEW,
+  STATUS_REJECTED
+} from "@/constants/requestStatus";
+import { formatDate } from "@/utils/date";
 
 interface RequestCardProps {
-  id: string
-  business: string
-  amount: number
-  date: string
-  status: string
+  business: string;
+  amount: number;
+  date: string;
+  status: string;
+  onClick: () => void;
 }
 
-export const RequestCard: React.FC<RequestCardProps> = ({
-  id,
-  business,
-  amount,
-  date,
-  status,
-}) => {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case STATUS_APPROVED:
-        return "text-green-600 bg-green-100";
-      case STATUS_PENDING:
-        return "text-yellow-600 bg-yellow-100";
-      case STATUS_REJECTED:
-        return "text-red-600 bg-red-100";
-      default:
-        return "text-gray-600 bg-gray-100";
-    }
-  };
+const statusDisplay: Record<string, { label: string; color: string }> = {
+  [STATUS_APPROVED]: { label: 'Aprobado', color: 'bg-green-100 text-green-800' },
+  [STATUS_PENDING]: { label: 'Pendiente', color: 'bg-yellow-100 text-yellow-800' },
+  [STATUS_ONREVIEW]: { label: 'En revisión', color: 'bg-blue-100 text-blue-800' },
+  [STATUS_REJECTED]: { label: 'Rechazado', color: 'bg-red-100 text-red-800' },
+};
+
+export const RequestCard: React.FC<RequestCardProps> = ({ business, amount, date, status, onClick }) => {
+  const display = statusDisplay[status] || { label: status, color: 'bg-gray-100 text-gray-800' };
 
   return (
-    <div className="p-4 rounded-xl shadow-sm border bg-white hover:shadow-md transition">
-      <div className="flex justify-between items-center mb-2">
-        <h3 className="font-semibold text-lg">{business}</h3>
-        <span className={`px-3 py-1 text-sm rounded-full ${getStatusColor(status)}`}>
-          {status}
+    <div 
+      onClick={onClick}
+      className="bg-white p-5 rounded-xl border border-gray-200 hover:shadow-lg transition-shadow cursor-pointer animate-fade-in"
+    >
+      <div className="flex justify-between items-start mb-3">
+        <h3 className="font-bold text-gray-800 text-lg">{business}</h3>
+        <span className={`px-3 py-1 text-xs font-semibold rounded-full ${display.color}`}>
+          {display.label}
         </span>
       </div>
-      <p className="text-sm text-gray-500">ID: {id}</p>
-      <p className="text-gray-700 font-medium mt-2">
-        Monto: ${amount.toLocaleString()}
-      </p>
-      <p className="text-sm text-gray-500">
-        Fecha: {new Date(date).toLocaleDateString("es-AR", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-        })}
-      </p>
+      <div className="space-y-1 text-sm">
+        <p className="text-gray-500 flex justify-between">
+          <span>Monto Solicitado:</span>
+          <span className="font-medium text-gray-900">${amount.toLocaleString()}</span>
+        </p>
+        <p className="text-gray-500 flex justify-between">
+          <span>Última Actualización:</span>
+          <span className="font-medium text-gray-900">{formatDate(date)}</span>
+        </p>
+      </div>
     </div>
   );
 };
