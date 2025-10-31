@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { UserCard } from "../../components/UserCard";
 import { HomeStatsCard } from "../../components/HomeStatsCard";
@@ -14,8 +14,9 @@ export const PymeHome: React.FC = () => {
   const { stats } = useRequest();
   const navigate = useNavigate();
 
-  const location = useLocation();
-  const requestSuccess = location.state?.requestSuccess || false;
+  // const location = useLocation();
+
+  // const requestSuccess = location.state?.requestSuccess || false;
 
   return (
     <section className="space-y-6 animate-fade-right">
