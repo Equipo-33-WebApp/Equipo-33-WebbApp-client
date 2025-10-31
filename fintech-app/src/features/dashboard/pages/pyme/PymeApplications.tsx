@@ -1,25 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
 import { RequestCard } from "@/features/dashboard/components/pyme/RequestCard";
 import { Navigate, useNavigate } from "react-router-dom";
 import { SummaryCard } from "../../components/SummaryCard";
-import { useRequest } from "../../hooks/useRequest";
 import { ROUTES } from "@/constants/routes";
 import { useAuth } from "@/hooks/useAuth";
-import { usePymeRequests } from "../../hooks/usePymeRequests"; // Import the new hook
+import { usePymeRequests } from "../../hooks/usePymeRequests";
+import { PymeRequestDetailModal } from "../../components/pyme/PymeRequestDetailModal";
+import type { RequestData } from "@/types";
 
 export const PymeApplications: React.FC = () => {
-  const { total, approved, pending, rejected } = useRequest().stats;
   const navigate = useNavigate();
   const { isFullyRegistered } = useAuth();
-  const { requests, isLoading, error } = usePymeRequests(); // Use the new hook
+  const { requests, isLoading, error, requestCounts } = usePymeRequests();
+  const [selectedRequest, setSelectedRequest] = useState<RequestData | null>(null);
 
-  if (!isFullyRegistered) return <Navigate to={ROUTES.DASHBOARD.BASE} replace />
+  if (!isFullyRegistered) return <Navigate to={ROUTES.DASHBOARD.BASE} replace />;
+
+  const handleOpenModal = (request: RequestData) => {
+    setSelectedRequest(request);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedRequest(null);
+  };
 
   const summaryInfo = [
-    { label: "Solicitudes Totales", value: total, color: "bg-blue-50 text-blue-700" },
-    { label: "Aprobadas", value: approved, color: "bg-green-50 text-green-700" },
-    { label: "Pendientes", value: pending, color: "bg-yellow-50 text-yellow-700" },
-    { label: "Rechazadas", value: rejected, color: "bg-red-50 text-red-700" },
+    { label: "Solicitudes Totales", value: requestCounts.total, color: "bg-blue-50 text-blue-700" },
+    { label: "Aprobadas", value: requestCounts.approved, color: "bg-green-50 text-green-700" },
+    { label: "Pendientes", value: requestCounts.pending, color: "bg-yellow-50 text-yellow-700" },
+    { label: "Rechazadas", value: requestCounts.rejected, color: "bg-red-50 text-red-700" },
   ];
 
   return (
@@ -31,7 +40,6 @@ export const PymeApplications: React.FC = () => {
             Revisa el estado de tus solicitudes de crédito y consulta tu historial reciente.
           </p>
         </div>
-
         <button 
           onClick={() => navigate(ROUTES.DASHBOARD.PYME.REQUEST)}
           className="inline-flex w-fit items-center gap-2 px-5 py-2 bg-accent hover:bg-accent/80 text-white font-medium rounded-lg shadow-md transition"
@@ -55,13 +63,25 @@ export const PymeApplications: React.FC = () => {
         ) : requests.length > 0 ? (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {requests.map(req => (
-              <RequestCard business={req.companyName} date={req.updatedAt} key={req.id} {...req} />
+              <RequestCard 
+                key={req.id} 
+                {...req} 
+                business={req.companyName} 
+                date={req.updatedAt} 
+                onClick={() => handleOpenModal(req)} 
+              />
             ))}
           </div>
         ) : (
           <p className="text-gray-500 italic">Aún no has realizado solicitudes.</p>
         )}
       </div>
+
+      <PymeRequestDetailModal 
+        isOpen={!!selectedRequest}
+        onClose={handleCloseModal}
+        request={selectedRequest}
+      />
     </section>
   );
 };

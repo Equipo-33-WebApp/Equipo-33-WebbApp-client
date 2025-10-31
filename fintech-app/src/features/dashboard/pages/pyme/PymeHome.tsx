@@ -1,22 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { UserCard } from "../../components/UserCard";
 import { HomeStatsCard } from "../../components/HomeStatsCard";
-import { useRequest } from "../../hooks/useRequest";
+import { usePymeRequests } from "../../hooks/usePymeRequests";
 import { ROUTES } from "@/constants/routes";
 import { CheckCircledIcon, CircleIcon } from "@/components/icons";
 import { PymeRecentRequestsCard } from "../../components/pyme/PymeRecentRequestsCard";
-
+import { PymeRequestDetailModal } from "../../components/pyme/PymeRequestDetailModal";
+import type { RequestData } from "@/types";
 
 export const PymeHome: React.FC = () => {
   const { user, isAuthenticated, hasPymeData, hasKyc, isFullyRegistered } = useAuth();
-  const { stats } = useRequest();
+  const { requestCounts } = usePymeRequests();
   const navigate = useNavigate();
+  const [selectedRequest, setSelectedRequest] = useState<RequestData | null>(null);
 
-  // const location = useLocation();
+  const handleOpenModal = (request: RequestData) => {
+    setSelectedRequest(request);
+  };
 
-  // const requestSuccess = location.state?.requestSuccess || false;
+  const handleCloseModal = () => {
+    setSelectedRequest(null);
+  };
 
   return (
     <section className="space-y-6 animate-fade-right">
@@ -26,8 +32,8 @@ export const PymeHome: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 flex flex-col gap-6">
-          <HomeStatsCard statsData={stats} />
-          {isFullyRegistered && <PymeRecentRequestsCard />} 
+          <HomeStatsCard statsData={requestCounts} />
+          {isFullyRegistered && <PymeRecentRequestsCard onOpenModal={handleOpenModal} />} 
         </div>
 
         <div className="flex flex-col gap-6">
@@ -88,6 +94,11 @@ export const PymeHome: React.FC = () => {
         </div>
 
       </div>
+      <PymeRequestDetailModal 
+        isOpen={!!selectedRequest}
+        onClose={handleCloseModal}
+        request={selectedRequest}
+      />
     </section>
   );
 };

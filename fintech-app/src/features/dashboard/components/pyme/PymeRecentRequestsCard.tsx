@@ -3,12 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '@/constants/routes';
 import { usePymeRequests } from '../../hooks/usePymeRequests';
 import { RequestCard } from './RequestCard';
+import type { RequestData } from "@/types";
 
-export const PymeRecentRequestsCard: React.FC = () => {
+interface PymeRecentRequestsCardProps {
+  onOpenModal: (request: RequestData) => void;
+}
+
+export const PymeRecentRequestsCard: React.FC<PymeRecentRequestsCardProps> = ({ onOpenModal }) => {
   const navigate = useNavigate();
   const { requests, isLoading, error } = usePymeRequests();
 
-  // Get the 3 most recent requests
   const recentRequests = requests.slice(0, 3);
 
   return (
@@ -23,7 +27,7 @@ export const PymeRecentRequestsCard: React.FC = () => {
         ) : error ? (
           <p className="text-red-500 italic">Error al cargar las solicitudes.</p>
         ) : recentRequests.length > 0 ? (
-          recentRequests.map(req => <RequestCard business={req.companyName} date={req.updatedAt} key={req.id} {...req} />)
+          recentRequests.map(req => <RequestCard business={req.companyName} date={req.createdAt} key={req.id} {...req} onClick={() => onOpenModal(req)} />)
         ) : (
           <p className="text-gray-500 text-sm">No tienes solicitudes recientes.</p>
         )}
