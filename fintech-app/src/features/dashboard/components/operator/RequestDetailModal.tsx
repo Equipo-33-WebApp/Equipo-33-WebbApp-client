@@ -128,12 +128,11 @@ const AmlCheckSection: React.FC<{ checks: AmlCheck[]; isLoading: boolean; error:
 };
 
 export const RequestDetailModal: React.FC<RequestDetailModalProps> = ({ isOpen, onClose, request, onUpdate }) => {
-  if (!isOpen || !request) return null;
-
+  
   const { updateStatus, isLoading: isUpdating, error: updateError, data: updateData } = useRequestUpdate();
-  const { checks: amlChecks, isLoading: isLoadingAml, error: errorAml } = useOperatorAmlChecks(request.pymeId);
+  const { checks: amlChecks, isLoading: isLoadingAml, error: errorAml } = useOperatorAmlChecks(request?.pymeId);
   const [showAml, setShowAml] = useState(false);
-
+  
   useEffect(() => {
     if (updateData) {
       const timer = setTimeout(() => {
@@ -144,6 +143,8 @@ export const RequestDetailModal: React.FC<RequestDetailModalProps> = ({ isOpen, 
     }
   }, [updateData, onUpdate, onClose]);
 
+  if (!isOpen || !request) return null;
+  
   const handleStatusChange = (newStatus: string) => {
     if (request) {
       updateStatus(request.id, newStatus);
@@ -157,7 +158,8 @@ export const RequestDetailModal: React.FC<RequestDetailModalProps> = ({ isOpen, 
       if (docType === 'annualFinancials') return 'Estados Financieros Anuales';
       if (docType === 'taxReturn') return 'Declaración de Impuestos';
       return "Documento";
-    } catch (e) {
+    } catch (error) {
+      console.log(error)
       return "Documento";
     }
   };

@@ -11,111 +11,112 @@ import {
 } from "@/constants/requestStatus";
 
 export interface PymeRequestDetailModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    request: RequestData | null;
+  isOpen: boolean;
+  onClose: () => void;
+  request: RequestData | null;
 }
 
 const statusDisplay: Record<string, { label: string; color: string }> = {
-    [STATUS_APPROVED]: { label: 'Aprobado', color: 'bg-green-100 text-green-800' },
-    [STATUS_PENDING]: { label: 'Pendiente', color: 'bg-yellow-100 text-yellow-800' },
-    [STATUS_ONREVIEW]: { label: 'En revisión', color: 'bg-blue-100 text-blue-800' },
-    [STATUS_REJECTED]: { label: 'Rechazado', color: 'bg-red-100 text-red-800' },
-  };
-  
+  [STATUS_APPROVED]: { label: 'Aprobado', color: 'bg-green-100 text-green-800' },
+  [STATUS_PENDING]: { label: 'Pendiente', color: 'bg-yellow-100 text-yellow-800' },
+  [STATUS_ONREVIEW]: { label: 'En revisión', color: 'bg-blue-100 text-blue-800' },
+  [STATUS_REJECTED]: { label: 'Rechazado', color: 'bg-red-100 text-red-800' },
+};
+
 const riskLevelDisplay: Record<string, { label: string; color: string }> = {
-    High: { label: "Alto", color: "bg-red-100 text-red-800" },
-    Medium: { label: "Medio", color: "bg-yellow-100 text-yellow-800" },
-    Low: { label: "Bajo", color: "bg-green-100 text-green-800" },
-  };
+  High: { label: "Alto", color: "bg-red-100 text-red-800" },
+  Medium: { label: "Medio", color: "bg-yellow-100 text-yellow-800" },
+  Low: { label: "Bajo", color: "bg-green-100 text-green-800" },
+};
 
 const ExpandableText: React.FC<{ text: string; maxLength?: number }> = ({ text, maxLength = 120 }) => {
-    const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
-    if (text.length <= maxLength) {
-        return <p className="text-sm text-gray-700 leading-relaxed">{text}</p>;
-    }
+  if (text.length <= maxLength) {
+    return <p className="text-sm text-gray-700 leading-relaxed">{text}</p>;
+  }
 
-    return (
-        <div className="text-sm text-gray-700 leading-relaxed">
-            <p>{isExpanded ? text : `${text.substring(0, maxLength)}...`}</p>
-            <button 
-                onClick={() => setIsExpanded(!isExpanded)} 
-                className="text-blue-600 hover:underline text-xs font-bold mt-1"
-            >
-                {isExpanded ? 'Leer menos' : 'Leer más'}
-            </button>
-        </div>
-    );
+  return (
+    <div className="text-sm text-gray-700 leading-relaxed">
+      <p>{isExpanded ? text : `${text.substring(0, maxLength)}...`}</p>
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="text-blue-600 hover:underline text-xs font-bold mt-1"
+      >
+        {isExpanded ? 'Leer menos' : 'Leer más'}
+      </button>
+    </div>
+  );
 };
 
 const AmlCheckSkeleton = () => (
-    <div className="space-y-4">
-      {[...Array(2)].map((_, i) => (
-        <div key={i} className="p-4 bg-gray-50 rounded-lg border animate-pulse">
-          <div className="flex justify-between items-center mb-3">
-            <div className="h-5 w-20 bg-gray-200 rounded-full"></div>
-            <div className="h-4 w-24 bg-gray-200 rounded-md"></div>
-          </div>
-          <div className="h-4 bg-gray-200 rounded-md w-full mb-2"></div>
-          <div className="h-4 bg-gray-200 rounded-md w-3/4"></div>
+  <div className="space-y-4">
+    {[...Array(2)].map((_, i) => (
+      <div key={i} className="p-4 bg-gray-50 rounded-lg border animate-pulse">
+        <div className="flex justify-between items-center mb-3">
+          <div className="h-5 w-20 bg-gray-200 rounded-full"></div>
+          <div className="h-4 w-24 bg-gray-200 rounded-md"></div>
         </div>
-      ))}
-    </div>
-  );
+        <div className="h-4 bg-gray-200 rounded-md w-full mb-2"></div>
+        <div className="h-4 bg-gray-200 rounded-md w-3/4"></div>
+      </div>
+    ))}
+  </div>
+);
 
 const AmlCheckSection: React.FC<{ checks: AmlCheck[]; isLoading: boolean; error: Error | null }> = ({ checks, isLoading, error }) => {
-    if (isLoading) return <AmlCheckSkeleton />;
-    if (error) return <p className="text-center text-red-600 bg-red-50 p-4 rounded-lg">Error al cargar las verificaciones: {error.message}</p>;
-    if (checks.length === 0) return <p className="text-center text-gray-500 bg-gray-50 p-4 rounded-lg">No se encontraron verificaciones AML.</p>;
-  
-    return (
-      <div className="space-y-4 max-h-60 overflow-y-auto pr-2 -mr-2">
-        {checks.map(check => {
-          const risk = riskLevelDisplay[check.riskLevel] || { label: check.riskLevel, color: 'bg-gray-100 text-gray-800' };
-          return (
-            <div key={check.id} className="p-4 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex justify-between items-start mb-3">
-                    <span className={`px-3 py-1 text-xs font-semibold rounded-full ${risk.color}`}>{risk.label}</span>
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                        <span>{formatDate(check.createdAt)}</span>
-                    </div>
-                </div>
-                <ExpandableText text={check.resultSummary} />
-                
-                {check.flags && check.flags.length > 0 && (
-                    <div className="mt-4">
-                        <h4 className="text-xs font-bold text-gray-500 mb-2">Alertas Detectadas:</h4>
-                        <div className="flex flex-wrap gap-2">
-                            {check.flags.map((flag, index) => (
-                                <span key={index} className="px-2 py-1 text-xs font-medium bg-orange-100 text-orange-800 rounded-md">
-                                    {flag}
-                                </span>
-                            ))}
-                        </div>
-                    </div>
-                )}
+  if (isLoading) return <AmlCheckSkeleton />;
+  if (error) return <p className="text-center text-red-600 bg-red-50 p-4 rounded-lg">Error al cargar las verificaciones: {error.message}</p>;
+  if (checks.length === 0) return <p className="text-center text-gray-500 bg-gray-50 p-4 rounded-lg">No se encontraron verificaciones AML.</p>;
 
-                {check.requiresManualReview && (
-                    <div className="mt-4 pt-3 border-t border-dashed flex items-center gap-2 text-sm text-amber-700 font-semibold">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                        <span>Requiere Revisión Manual</span>
-                    </div>
-                )}
+  return (
+    <div className="space-y-4 max-h-60 overflow-y-auto pr-2 -mr-2">
+      {checks.map(check => {
+        const risk = riskLevelDisplay[check.riskLevel] || { label: check.riskLevel, color: 'bg-gray-100 text-gray-800' };
+        return (
+          <div key={check.id} className="p-4 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex justify-between items-start mb-3">
+              <span className={`px-3 py-1 text-xs font-semibold rounded-full ${risk.color}`}>{risk.label}</span>
+              <div className="flex items-center gap-2 text-xs text-gray-500">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                <span>{formatDate(check.createdAt)}</span>
+              </div>
             </div>
-          )
-        })}
-      </div>
-    );
+            <ExpandableText text={check.resultSummary} />
+
+            {check.flags && check.flags.length > 0 && (
+              <div className="mt-4">
+                <h4 className="text-xs font-bold text-gray-500 mb-2">Alertas Detectadas:</h4>
+                <div className="flex flex-wrap gap-2">
+                  {check.flags.map((flag, index) => (
+                    <span key={index} className="px-2 py-1 text-xs font-medium bg-orange-100 text-orange-800 rounded-md">
+                      {flag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {check.requiresManualReview && (
+              <div className="mt-4 pt-3 border-t border-dashed flex items-center gap-2 text-sm text-amber-700 font-semibold">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                <span>Requiere Revisión Manual</span>
+              </div>
+            )}
+          </div>
+        )
+      })}
+    </div>
+  );
 };
-  
+
 
 export const PymeRequestDetailModal: React.FC<PymeRequestDetailModalProps> = ({ isOpen, onClose, request }) => {
-  if (!isOpen || !request) return null;
 
   const { checks: amlChecks, isLoading: isLoadingAml, error: errorAml } = useAmlChecks();
   const [showAml, setShowAml] = useState(false);
+
+  if (!isOpen || !request) return null;
 
   const getDocumentName = (url: string) => {
     try {
@@ -124,7 +125,8 @@ export const PymeRequestDetailModal: React.FC<PymeRequestDetailModalProps> = ({ 
       if (docType === 'annualFinancials') return 'Estados Financieros Anuales';
       if (docType === 'taxReturn') return 'Declaración de Impuestos';
       return "Documento";
-    } catch (e) {
+    } catch (error) {
+      console.log(error);
       return "Documento";
     }
   };
@@ -150,41 +152,41 @@ export const PymeRequestDetailModal: React.FC<PymeRequestDetailModalProps> = ({ 
         <div className="p-6 max-h-[70vh] overflow-y-auto">
           {/* ... (Main request details grid) */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 text-sm">
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">Información de la PyME</h3>
-            <div className="flex justify-between"><span className="font-medium text-gray-600">Empresa:</span><span className="text-gray-900">{request.companyName}</span></div>
-            <div className="flex justify-between"><span className="font-medium text-gray-600">Sector:</span><span className="text-gray-900">{request.sector}</span></div>
-            <div className="flex justify-between"><span className="font-medium text-gray-600">Fecha de Solicitud:</span><span className="text-gray-900">{formatDate(request.createdAt)}</span></div>
-            <div className="flex justify-between"><span className="font-medium text-gray-600">Última Actualización:</span><span className="text-gray-900">{formatDate(request.updatedAt)}</span></div>
-          </div>
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">Información de la PyME</h3>
+              <div className="flex justify-between"><span className="font-medium text-gray-600">Empresa:</span><span className="text-gray-900">{request.companyName}</span></div>
+              <div className="flex justify-between"><span className="font-medium text-gray-600">Sector:</span><span className="text-gray-900">{request.sector}</span></div>
+              <div className="flex justify-between"><span className="font-medium text-gray-600">Fecha de Solicitud:</span><span className="text-gray-900">{formatDate(request.createdAt)}</span></div>
+              <div className="flex justify-between"><span className="font-medium text-gray-600">Última Actualización:</span><span className="text-gray-900">{formatDate(request.updatedAt)}</span></div>
+            </div>
 
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">Detalles del Crédito</h3>
-            <div className="flex justify-between items-center">
-              <span className="font-medium text-gray-600">Estado:</span>
-              <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${status.color}`}>{status.label}</span>
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">Detalles del Crédito</h3>
+              <div className="flex justify-between items-center">
+                <span className="font-medium text-gray-600">Estado:</span>
+                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${status.color}`}>{status.label}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="font-medium text-gray-600">Nivel de Riesgo:</span>
+                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${riskDisplay.color}`}>{riskDisplay.label}</span>
+              </div>
+              <div className="flex justify-between"><span className="font-medium text-gray-600">Monto Solicitado:</span><span className="font-bold text-lg text-blue-600">${request.amount.toLocaleString()}</span></div>
+              <div className="flex justify-between"><span className="font-medium text-gray-600">Plazo:</span><span className="text-gray-900">{request.termInMonths} meses</span></div>
+              <div className="flex justify-between"><span className="font-medium text-gray-600">Destino:</span><span className="text-gray-900">{request.creditDestination}</span></div>
             </div>
-            <div className="flex justify-between items-center">
-              <span className="font-medium text-gray-600">Nivel de Riesgo:</span>
-              <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${riskDisplay.color}`}>{riskDisplay.label}</span>
-            </div>
-            <div className="flex justify-between"><span className="font-medium text-gray-600">Monto Solicitado:</span><span className="font-bold text-lg text-blue-600">${request.amount.toLocaleString()}</span></div>
-            <div className="flex justify-between"><span className="font-medium text-gray-600">Plazo:</span><span className="text-gray-900">{request.termInMonths} meses</span></div>
-            <div className="flex justify-between"><span className="font-medium text-gray-600">Destino:</span><span className="text-gray-900">{request.creditDestination}</span></div>
           </div>
-        </div>
 
           <div className="mt-8 pt-6 border-t">
             <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold text-gray-800">Historial de Verificaciones AML</h3>
-                <button onClick={() => setShowAml(!showAml)} className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors">
-                    {showAml ? 'Ocultar' : 'Mostrar'}
-                </button>
+              <h3 className="text-lg font-semibold text-gray-800">Historial de Verificaciones AML</h3>
+              <button onClick={() => setShowAml(!showAml)} className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors">
+                {showAml ? 'Ocultar' : 'Mostrar'}
+              </button>
             </div>
             {showAml && (
-                <div className="mt-4">
-                    <AmlCheckSection checks={amlChecks} isLoading={isLoadingAml} error={errorAml} />
-                </div>
+              <div className="mt-4">
+                <AmlCheckSection checks={amlChecks} isLoading={isLoadingAml} error={errorAml} />
+              </div>
             )}
           </div>
 
