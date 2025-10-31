@@ -76,6 +76,32 @@ export interface CreateCreditRequestResponse {
   id: string
 }
 
+export interface GetCreditRequestResponse {
+  userId: string
+  pymeId: string
+  amount: number
+  termInMonths: number
+  annualIncome: number
+  netIncome: number
+  creditDestination: string
+  riskLevel: string
+  status: string
+  createdAt: string
+  updatedAt: string | null
+  uploadedDocuments: Document[]
+  id: string
+}
+
+export interface CreateCreditRequestBody {
+  amount: number
+  termInMonths: number
+  annualIncome: number
+  netIncome: number
+  creditDestination: string
+  riskLevel: string
+  status: string
+}
+
 export interface UpdateCreditRequestBody {
   amount: number
   termInMonths: number

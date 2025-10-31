@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
 import { uploadKyc } from "@/features/auth/services/kycService";
 import { amlVerification } from "../services/amlService";
-import { createRequest, finishRequest, getCurrentUserDraftRequestIdAndPymeId, updateRequest } from "../services/requestService";
+import { createRequest, finishRequest, getDraftRequestData, updateRequest } from "../services/requestService";
 import { uploadAnnualFinancials, uploadTaxReturn } from "../services/documentsService";
 import { signCreditRequest } from "../services/signatureService";
 import { requestFormSchema } from "../schemas/RequestFormsSchema";
@@ -14,6 +14,7 @@ import type { FormEvent } from "react";
 import type { RequestFormsData } from "../types";
 import { useAuth } from "@/hooks/useAuth";
 import type { LoadingMsgState } from "@/types";
+import { getPymeByAuthId } from "@/features/auth/services/pymeService";
 
 interface UseSubmitRequestProps {
   formData: RequestFormsData
@@ -74,18 +75,25 @@ export const useSubmitRequest = ({ formData, setLoading, setError, setValidation
       const parsedRiskLevel = parseRiskLevel(amlRes.riskLevel);
 
       // 3- Crear solicitud de crédito (PUT)
+      let creditFormId: string;
+      
       setLoading({ active: true, message: "Verificando borrador" });
-      const { creditFormId, pymeId } = await getCurrentUserDraftRequestIdAndPymeId(token);
+      const requestData = await getDraftRequestData(token);
+      const pymeData = await getPymeByAuthId(token);
+      
+      if (!pymeData?.pymeId) throw new Error("El usuario no ha cargado los datos de su empresa");
 
-      if (!pymeId) throw new Error("Este usuario no ha completado info de su PyME");
-
-      if (!creditFormId) {
+      const normalized = normalizeRequestData(formData.creditData, parsedRiskLevel);
+      
+      if (requestData?.id) {
+        creditFormId = requestData.id;
+      } else {
         setLoading({ active: true, message: "Creando solicitud" });
-        await createRequest(pymeId, token);
+        const { id } = await createRequest(normalized, pymeData.pymeId, token);
+        creditFormId = id;
       }
 
       setLoading({ active: true, message: "Cargando datos" });
-      const normalized = normalizeRequestData(formData.creditData, parsedRiskLevel);
       await updateRequest(normalized, creditFormId, token);
 
 

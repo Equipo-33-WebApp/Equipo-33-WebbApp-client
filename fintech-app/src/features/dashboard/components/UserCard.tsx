@@ -2,7 +2,7 @@ import { ROLE_OPERATOR, ROLE_PYME } from "@/constants/roles";
 import { UserAvatar } from "./UserAvatar";
 
 interface UserCardProps {
-  user: User | null
+  user: User | null;
 }
 
 export const UserCard: React.FC<UserCardProps> = ({ user }) => (
@@ -21,9 +21,10 @@ export const UserCard: React.FC<UserCardProps> = ({ user }) => (
             </p>
           )}
           {user.role === ROLE_OPERATOR && (
-            <p className="text-gray-500 text-sm">
-              N° de Operador: 5433235
-            </p>
+            <div>
+              <p className="text-gray-500 text-sm">N° de Operador:</p>
+              <p className="text-xs">{user.id}</p>
+            </div>
           )}
         </div>
       </>

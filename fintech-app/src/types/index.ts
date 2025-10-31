@@ -1,10 +1,17 @@
 export interface RequestData {
-  id: string
-  business: string
-  amount: number
-  date: string
-  status: string
-  flaggedKyc?: boolean
+    id: string
+    amount: number
+    termInMonths: number
+    annualIncome: number
+    netIncome: number
+    creditDestination: string
+    riskLevel: string
+    purpose: string
+    status: string
+    updatedAt: string
+    pymeId: string
+    companyName: string
+    sector: string
 }
 
 export interface LoadingMsgState {

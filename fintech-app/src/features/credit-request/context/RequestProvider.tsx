@@ -5,6 +5,8 @@ import { requestSteps } from "@/constants/steps";
 import type { LoadingMsgState } from "@/types";
 import { useSubmitRequest } from "../hooks/useSubmitRequest";
 import { useRequestDraft } from "../hooks/useRequestDraft";
+import Cookies from "js-cookie";
+import { getDraftRequestData } from "../services/requestService";
 
 export const RequestProvider = ({ children }: { children: ReactNode }) => {
   const [step, setStep] = useState(0);
@@ -53,32 +55,30 @@ export const RequestProvider = ({ children }: { children: ReactNode }) => {
   const { handleSubmit } = useSubmitRequest(hooksProps);
 
   useEffect(() => {
-    // const loadFormData = async () => {
-    //   try {
-    //     const token = Cookies.get("token");
-    //     if (!token) return;
+    const loadFormData = async () => {
+      try {
+        const token = Cookies.get("token");
+        if (!token) return;
 
-    //     const { creditFormId } = await getCurrentUserDraftRequestIdAndPymeId(token);
-    //     if (!creditFormId) return;
+        const data = await getDraftRequestData(token);
+        if (!data) return;
 
-    //     const data = await getRequestData(creditFormId, token);
+        setFormData(prev => ({
+          ...prev,
+          creditData: {
+            amount: data.amount ?? 0,
+            termInMonths: data.termInMonths ?? 6,
+            annualIncome: data.annualIncome ?? 0,
+            netIncome: data.netIncome ?? 0,
+            creditDestination: data.creditDestination ?? "Capital de Trabajo",
+          }
+        }));
+      } catch (err) {
+        console.error("Error cargando form data:", err);
+      }
+    };
 
-    //     setFormData(prev => ({
-    //       ...prev,
-    //       creditData: {
-    //         amount: data.amount ?? 0,
-    //         termInMonths: data.termInMonths ?? 6,
-    //         annualIncome: data.annualIncome ?? 0,
-    //         netIncome: data.netIncome ?? 0,
-    //         creditDestination: data.creditDestination ?? "Capital de Trabajo",
-    //       }
-    //     }));
-    //   } catch (err) {
-    //     console.error("Error cargando form data:", err);
-    //   }
-    // };
-
-    // loadFormData();
+    loadFormData();
   }, []);
 
 

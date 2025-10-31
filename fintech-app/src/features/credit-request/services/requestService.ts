@@ -1,14 +1,14 @@
 import { API_URL } from "@/constants/api";
-import type { CreateCreditRequestResponse, UpdateCreditRequestBody, UpdateCreditRequestResponse } from "../types";
+import type { CreateCreditRequestBody, CreateCreditRequestResponse, GetCreditRequestResponse, UpdateCreditRequestBody, UpdateCreditRequestResponse } from "../types";
 
-export const createRequest = async (pymeId: string, token: string): Promise<CreateCreditRequestResponse> => {
+export const createRequest = async (data: CreateCreditRequestBody, pymeId: string, token: string): Promise<CreateCreditRequestResponse> => {
   const res = await fetch(`${API_URL}/creditform`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ pymeId }),
+    body: JSON.stringify({ pymeId, ...data })
   });
 
   if (!res.ok) {
@@ -19,46 +19,16 @@ export const createRequest = async (pymeId: string, token: string): Promise<Crea
   return await res.json();
 };
 
-export const getDraftRequestData = async (creditFormId: string, token: string) => {
-  const res = await fetch(`${API_URL}/creditform/${creditFormId}`, {
+export const getDraftRequestData = async (token: string): Promise<GetCreditRequestResponse | null> => {
+  const res = await fetch(`${API_URL}/creditform/auth`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
+  if (res.status === 404) return null;
+
   if (!res.ok) throw new Error("No se pudo obtener la solicitud");
+
   return res.json();
-};
-
-
-export const getCurrentUserDraftRequestIdAndPymeId = async (token: string): Promise<{ creditFormId: string, pymeId: string }> => {
-  const newRequest = {
-    pymeId: "055c718a-2b23-490e-b90e-edd4f6885aea",
-    amount: 0,
-    termInMonths: 0,
-    annualIncome: 0,
-    netIncome: 0,
-    creditDestination: "Capital de Trabajo",
-    riskLevel: "High",
-    status: "Draft",
-    purpose: "Capital de Trabajo"
-  }
-  
-  const res = await fetch(`${API_URL}/creditform/`, {
-    method: "PUT",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(newRequest)
-  });
-
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`Error al obtener la solicitud: ${text}`);
-  }
-
-  const data: UpdateCreditRequestResponse = await res.json();
-
-  return { creditFormId: data.id, pymeId: data.pymeId };
 };
 
 export const updateRequest = async (data: UpdateCreditRequestBody, creditFormId: string, token: string): Promise<UpdateCreditRequestResponse> => {

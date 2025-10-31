@@ -3,14 +3,15 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { UserCard } from "../../components/UserCard";
 import { HomeStatsCard } from "../../components/HomeStatsCard";
-import { useRequestStats } from "../../hooks/useRequestStats";
+import { useRequest } from "../../hooks/useRequest";
 import { ROUTES } from "@/constants/routes";
 import { CheckCircledIcon, CircleIcon } from "@/components/icons";
+import { PymeRecentRequestsCard } from "../../components/pyme/PymeRecentRequestsCard";
 
 
 export const PymeHome: React.FC = () => {
   const { user, isAuthenticated, hasPymeData, hasKyc, isFullyRegistered } = useAuth();
-  const stats = useRequestStats();
+  const { stats } = useRequest();
   const navigate = useNavigate();
 
   const location = useLocation();
@@ -23,15 +24,9 @@ export const PymeHome: React.FC = () => {
       </h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          {requestSuccess && (
-            <div className="bg-green-100 text-gray-700 px-6 py-3 rounded-xl shadow-md mb-4">
-              ✅ Tu solicitud fue creada con éxito.
-              <br />
-              Puedes ver su estado más abajo.
-            </div>
-          )}
+        <div className="lg:col-span-2 flex flex-col gap-6">
           <HomeStatsCard statsData={stats} />
+          {isFullyRegistered && <PymeRecentRequestsCard />} 
         </div>
 
         <div className="flex flex-col gap-6">

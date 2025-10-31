@@ -1,9 +1,10 @@
 import Cookies from "js-cookie";
-import { createRequest, getCurrentUserDraftRequestIdAndPymeId, updateRequest } from "../services/requestService";
+import { createRequest, getDraftRequestData, updateRequest } from "../services/requestService";
 import { uploadAnnualFinancials, uploadTaxReturn } from "../services/documentsService";
 import { normalizeRequestData } from "../utils/normalizers";
 import type { RequestFormsData } from "../types";
 import type { LoadingMsgState } from "@/types";
+import { getPymeByAuthId } from "@/features/auth/services/pymeService";
 
 interface UseRequestDraftProps {
   formData: RequestFormsData
@@ -23,15 +24,20 @@ export const useRequestDraft = ({ formData, setLoading, setError, setValidationE
       const token = Cookies.get("token");
       if (!token) return;
 
-      // Endpoints de borrador
-      const { creditFormId, pymeId } = await getCurrentUserDraftRequestIdAndPymeId(token);
-      if (!pymeId) throw new Error("Este usuario no ha completado la información de su pyme");
+      let creditFormId: string;
 
-      if (!creditFormId) {
-        await createRequest(pymeId, token);
-      }
+      const requestData = await getDraftRequestData(token);
+      const pymeData = await getPymeByAuthId(token);
 
+      if (!pymeData?.pymeId) throw new Error("El usuario no ha cargado los datos de su empresa");
       const normalizedRequestData = normalizeRequestData(formData.creditData);
+
+      if (requestData?.id) {
+        creditFormId = requestData.id;
+      } else {
+        const { id } = await createRequest(normalizedRequestData, pymeData.pymeId, token);
+        creditFormId = id;
+      }
 
       await updateRequest(normalizedRequestData, creditFormId, token);
 
@@ -46,8 +52,6 @@ export const useRequestDraft = ({ formData, setLoading, setError, setValidationE
 
       setLoading({ active: true, message: "Borrador guardado ✅" });
       await new Promise(resolve => setTimeout(resolve, 2500));
-
-
     } catch (err) {
       console.error("Error al guardar borrador:", err);
       setLoading({ active: true, message: "Error al guardar borrador" })
