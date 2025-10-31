@@ -1,10 +1,11 @@
 import { STATUS_APPROVED, STATUS_DRAFT, STATUS_ONREVIEW, STATUS_PENDING, STATUS_REJECTED } from "@/constants/requestStatus";
 import { API_URL } from "@/constants/api";
-import { getToken } from "@/utils/getToken";
 import type { RequestData } from "@/types";
+import Cookies from "js-cookie";
 
 export const fetchRequests = async (status?: string, page?: number, limit?: number) => {
-  const token = getToken()
+  // const token = getToken()
+  const token = Cookies.get("token");
   const url = new URL(`${API_URL}/operatorPanel`);
   if (status) {
     url.searchParams.append('status', status);
@@ -27,7 +28,8 @@ export const fetchRequests = async (status?: string, page?: number, limit?: numb
 };
 
 export const updateRequestStatus = async (id: string, status: string) => {
-  const token = getToken()
+  // const token = getToken()
+  const token = Cookies.get("token");
   const res = await fetch(`${API_URL}/operatorpanel/${id}`, {
     method: "PUT",
     headers: {
