@@ -59,7 +59,7 @@ export const useSubmitRequest = ({ formData, setLoading, setError, setValidation
         ...formData.kycData
       }, token);
 
-      if (kycRes.verified) {
+      if (!kycRes.verified) {
         setError(kycRes.observation);
         return;
       }
