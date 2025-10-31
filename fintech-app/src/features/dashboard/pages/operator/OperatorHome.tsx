@@ -50,7 +50,7 @@ export const OperatorHome: React.FC = () => {
         isOpen={!!selectedRequest}
         onClose={handleCloseModal}
         request={selectedRequest}
-        onRequestUpdate={handleRequestUpdate}
+        onUpdate={handleRequestUpdate}
       />
     </section>
   );
